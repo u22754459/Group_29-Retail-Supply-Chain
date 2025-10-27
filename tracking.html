@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking - Supply Chain Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f9fafb; }
+        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .stat-card { border-left: 4px solid #2563eb; }
+        .order-card { transition: box-shadow 0.2s; }
+        .order-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .progress-bar { transition: width 0.5s ease-in-out; }
+        .footer { background-color: #1f2937; color: white; }
+        .hidden { display: none; }
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <i class="bi bi-box-seam fs-4 text-primary me-2"></i>
+                <span class="fw-bold text-primary">SupplyChain Master</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="tracking.html">Order Tracking</a></li>
+                    <li class="nav-item"><a class="nav-link" href="forecast.html">Forecast</a></li>
+                    <li class="nav-item"><a class="nav-link" href="customer.html">Customer Portal</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <a href="shop.html" class="btn btn-link position-relative">
+                        <i class="bi bi-cart3 fs-5 text-secondary"></i>
+                    </a>
+                    <div id="authButtons">
+                        <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+                        <a href="signup.html" class="btn btn-success btn-sm">Sign Up</a>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <h1 class="mb-4">Supply Chain Order Tracking</h1>
+        
+        <!-- KPI Metrics -->
+        <div class="row g-3 mb-4">
+            <div class="col-md">
+                <div class="card stat-card border-start border-primary border-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="small text-muted mb-1">Total Orders</p>
+                                <h3 class="mb-0">156</h3>
+                            </div>
+                            <i class="bi bi-box-seam text-primary fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="card stat-card border-start border-success border-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="small text-muted mb-1">On-Time Delivery</p>
+                                <h3 class="mb-0">87.5%</h3>
+                            </div>
+                            <i class="bi bi-clock text-success fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="card stat-card border-start border-info border-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="small text-muted mb-1">Avg Delivery Time</p>
+                                <h3 class="mb-0">2.8 days</h3>
+                            </div>
+                            <i class="bi bi-graph-up text-info fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="card stat-card border-start border-warning border-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="small text-muted mb-1">Return Rate</p>
+                                <h3 class="mb-0">4.2%</h3>
+                            </div>
+                            <i class="bi bi-exclamation-triangle text-warning fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="card stat-card border-start border-warning border-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="small text-muted mb-1">Satisfaction</p>
+                                <h3 class="mb-0">4.6/5</h3>
+                            </div>
+                            <i class="bi bi-star-fill text-warning fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders List -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-4">
+                    <i class="bi bi-cart me-2"></i>
+                    Recent Orders & Live Tracking
+                </h5>
+                <div class="vstack gap-3" id="ordersContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-5 py-4">
+        <div class="container">
+            <div class="text-center small text-white-50">
+                <p class="mb-1">&copy; 2025 SupplyChain Master - BFB 321 Project Team</p>
+                <p class="mb-0">D Tsebe | M Thebe | P Mkhwanazi | K Mokone | A Majova</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const orders = [
+            {id: 'ORD-001', customer: 'Katlego Mokone', product: 'Samsung Galaxy S23', status: 'in-transit', eta: '2025-10-23', location: 'Johannesburg Hub', progress: 65},
+            {id: 'ORD-002', customer: 'Phumi Mkhwanazi', product: 'iPhone 14 Pro', status: 'processing', eta: '2025-10-24', location: 'Warehouse', progress: 30},
+            {id: 'ORD-003', customer: 'Mamoshoeshoe Thebe', product: 'AirPods Pro', status: 'delivered', eta: '2025-10-20', location: 'Delivered', progress: 100},
+            {id: 'ORD-004', customer: 'Dineo Tsebe', product: 'Nike Air Max', status: 'delayed', eta: '2025-10-22', location: 'Pretoria Depot', progress: 45},
+            {id: 'ORD-005', customer: 'Alulutho Majova', product: 'JavaScript Guide', status: 'delivered', eta: '2025-10-19', location: 'Delivered', progress: 100}
+        ];
+
+        function getStatusColor(status) {
+            const colors = {
+                'delivered': 'success',
+                'in-transit': 'info',
+                'processing': 'warning',
+                'delayed': 'danger'
+            };
+            return colors[status] || 'secondary';
+        }
+
+        function displayOrders() {
+            const container = document.getElementById('ordersContainer');
+            container.innerHTML = orders.map(order => {
+                const statusColor = getStatusColor(order.status);
+                return `
+                    <div class="card order-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h6 class="mb-1">${order.id}</h6>
+                                    <p class="small text-muted mb-0">${order.customer}</p>
+                                    <p class="small text-secondary">${order.product}</p>
+                                </div>
+                                <span class="badge bg-${statusColor}">${order.status.toUpperCase()}</span>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span class="text-muted">Progress</span>
+                                    <span class="fw-medium">${order.progress}%</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-${statusColor}" style="width: ${order.progress}%;"></div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between small text-muted">
+                                <span><i class="bi bi-geo-alt me-1"></i>${order.location}</span>
+                                <span>ETA: ${order.eta}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function checkAuth() {
+            const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            const authButtons = document.getElementById('authButtons');
+            const userGreeting = document.getElementById('userGreeting');
+            const userName = document.getElementById('userName');
+
+            if (user) {
+                authButtons.classList.add('hidden');
+                userGreeting.classList.remove('hidden');
+                userName.textContent = user.name;
+            }
+        }
+
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const badge = document.getElementById('cartBadge');
+            if (cart.length > 0) {
+                badge.classList.remove('hidden');
+                badge.textContent = cart.length;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            updateCartBadge();
+            displayOrders();
+        });
+    </script>
+</body>
+</html>
