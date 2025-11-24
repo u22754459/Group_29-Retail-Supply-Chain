@@ -76,15 +76,28 @@ def index():
                          inventory_value=round(inventory_value, 2),
                          avg_rating=avg_rating)
 
-@app.route('/shop')
+@app.route('/shop', methods=['GET', 'POST'])
 def shop():
-    """Shop page with product catalog"""
+    """Shop page with product catalog and cart functionality"""
+    if request.method == 'POST':
+        # Handle add to cart
+        action = request.form.get('action')
+        
+        if action == 'add_to_cart':
+            product_id = request.form.get('product_id')
+            product_name = request.form.get('product_name')
+            price = request.form.get('price')
+            
+            # In a real app, you'd add to a cart table or session
+            flash(f'{product_name} added to cart!', 'success')
+            return redirect(url_for('shop'))
+    
+    # GET request - display products
     conn = get_db_connection()
     products = conn.execute('''
         SELECT p.*, pc.category_name 
         FROM products p 
         LEFT JOIN product_categories pc ON p.category_id = pc.category_id
-        WHERE p.quantity > 0
         ORDER BY p.product_name
     ''').fetchall()
     
@@ -143,9 +156,46 @@ def forecast():
     
     return render_template('forecast.html', forecasts=forecasts)
 
-@app.route('/customer')
+@app.route('/customer', methods=['GET', 'POST'])
 def customer():
     """Customer feedback and satisfaction portal"""
+    if request.method == 'POST':
+        # Handle feedback submission
+        customer_name = request.form.get('customer_name')
+        customer_email = request.form.get('customer_email', '')
+        order_number = request.form.get('order_number')
+        rating = request.form.get('rating')
+        delivery_rating = request.form.get('delivery_rating')
+        product_rating = request.form.get('product_rating')
+        comment = request.form.get('comment')
+        
+        conn = get_db_connection()
+        try:
+            conn.execute('''
+                INSERT INTO feedback (customer_name, customer_email, order_number, rating, 
+                                    delivery_rating, product_rating, comment, feedback_date, order_status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                customer_name,
+                customer_email,
+                order_number,
+                int(rating),
+                int(delivery_rating),
+                int(product_rating),
+                comment,
+                datetime.now().strftime('%Y-%m-%d'),
+                'delivered'
+            ))
+            conn.commit()
+            flash('Thank you for your feedback!', 'success')
+        except Exception as e:
+            flash(f'Error submitting feedback: {str(e)}', 'danger')
+        finally:
+            conn.close()
+        
+        return redirect(url_for('customer'))
+    
+    # GET request - display feedback
     conn = get_db_connection()
     
     # Get recent feedback
