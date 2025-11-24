@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Supply Chain Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --danger-color: #ef4444;
+        }
+
+        body { background-color: #f9fafb; }
+        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        .product-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 100%;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .product-emoji { font-size: 4rem; }
+        
+        .category-btn {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .category-btn:hover { background-color: #e5e7eb; }
+        .category-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .cart-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            height: 100vh;
+            width: 400px;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s ease-in-out;
+            z-index: 1050;
+            overflow-y: auto;
+        }
+        .cart-sidebar.show { right: 0; }
+        
+        .cart-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1040;
+        }
+        .cart-backdrop.show { display: block; }
+        
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .footer {
+            background-color: #1f2937;
+            color: white;
+        }
+        .hidden { display: none; }
+        
+        @media (max-width: 768px) {
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <i class="bi bi-box-seam fs-4 text-primary me-2"></i>
+                <span class="fw-bold text-primary">SupplyChain Master</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="shop.html">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="tracking.html">Order Tracking</a></li>
+                    <li class="nav-item"><a class="nav-link" href="forecast.html">Forecast</a></li>
+                    <li class="nav-item"><a class="nav-link" href="customer.html">Customer Portal</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link position-relative" onclick="toggleCart()">
+                        <i class="bi bi-cart3 fs-5 text-secondary"></i>
+                        <span class="cart-badge hidden" id="cartBadge">0</span>
+                    </button>
+                    <div id="authButtons">
+                        <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+                        <a href="signup.html" class="btn btn-success btn-sm">Sign Up</a>
+                    </div>
+                    <div id="userGreeting" class="hidden">
+                        <span class="small text-secondary me-2">Hi, <span id="userName"></span></span>
+                        <button onclick="logout()" class="btn btn-danger btn-sm">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Backdrop -->
+    <div class="cart-backdrop" id="cartBackdrop" onclick="toggleCart()"></div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="p-4 h-100 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h4 mb-0">Shopping Cart</h2>
+                <button class="btn-close" onclick="toggleCart()"></button>
+            </div>
+            <div id="cartContent" class="flex-grow-1 overflow-auto">
+                <div class="text-center text-muted py-5">
+                    <i class="bi bi-cart3" style="font-size: 4rem;"></i>
+                    <p class="mt-3">Your cart is empty</p>
+                </div>
+            </div>
+            <div id="cartFooter" class="border-top pt-3 mt-3 hidden">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="h5 mb-0">Total:</span>
+                    <span class="h4 mb-0 text-primary" id="cartTotal">R 0.00</span>
+                </div>
+                <button class="btn btn-primary w-100" onclick="checkout()">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shop Content -->
+    <div class="container py-4">
+        <h1 class="mb-4">Shop Our Products</h1>
+        <div class="d-flex gap-2 mb-4 flex-wrap" id="categoryFilters"></div>
+        <div class="row g-4" id="productsContainer"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-5 py-4">
+        <div class="container">
+            <div class="text-center small text-white-50">
+                <p class="mb-1">&copy; 2025 SupplyChain Master - BFB 321 Project Team</p>
+                <p class="mb-0">D Tsebe | M Thebe | P Mkhwanazi | K Mokone | A Majova</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const products = [
+            {id: 1, sku: 'ELEC-001', name: 'Samsung Galaxy S23', category: 'Electronics', price: 899.99, stock: 248, emoji: '📱', description: 'Latest smartphone with advanced camera'},
+            {id: 2, sku: 'ELEC-002', name: 'iPhone 14 Pro', category: 'Electronics', price: 999.00, stock: 150, emoji: '📱', description: 'Apple flagship with ProRAW'},
+            {id: 3, sku: 'ELEC-003', name: 'AirPods Pro', category: 'Electronics', price: 249.00, stock: 95, emoji: '🎧', description: 'Wireless earbuds with ANC'},
+            {id: 4, sku: 'CLOTH-001', name: 'Nike Air Max', category: 'Clothing', price: 120.00, stock: 0, emoji: '👟', description: 'Premium running shoes'},
+            {id: 5, sku: 'BOOK-001', name: 'JavaScript Guide', category: 'Books', price: 45.99, stock: 180, emoji: '📚', description: 'Complete programming guide'},
+            {id: 6, sku: 'BEAU-001', name: 'Moisturizing Cream', category: 'Beauty', price: 24.99, stock: 210, emoji: '💄', description: 'Daily skincare essential'},
+            {id: 7, sku: 'SPORT-001', name: 'Yoga Mat', category: 'Sports', price: 39.99, stock: 120, emoji: '🧘', description: 'Non-slip premium mat'},
+            {id: 8, sku: 'HOME-001', name: 'Coffee Maker', category: 'Home', price: 79.99, stock: 45, emoji: '☕', description: 'Automatic drip maker'}
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        let currentFilter = 'All';
+
+        function displayProducts() {
+            const container = document.getElementById('productsContainer');
+            const filtered = currentFilter === 'All' ? products : products.filter(p => p.category === currentFilter);
+            
+            container.innerHTML = filtered.map(product => `
+                <div class="col-md-6 col-lg-3">
+                    <div class="card product-card border">
+                        <div class="card-body">
+                            <div class="text-center product-emoji mb-3">${product.emoji}</div>
+                            <h5 class="card-title">${product.name}</h5>
+                            <p class="small text-muted">${product.sku}</p>
+                            <p class="small text-secondary">${product.description}</p>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="h5 mb-0 text-primary">R ${product.price.toFixed(2)}</span>
+                                <span class="small ${product.stock > 0 ? 'text-success' : 'text-danger'}">
+                                    ${product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                                </span>
+                            </div>
+                            <button 
+                                onclick="addToCart(${product.id})" 
+                                ${product.stock === 0 ? 'disabled' : ''}
+                                class="btn w-100 ${product.stock > 0 ? 'btn-primary' : 'btn-secondary'}">
+                                ${product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function createCategoryFilters() {
+            const categories = ['All', ...new Set(products.map(p => p.category))];
+            const container = document.getElementById('categoryFilters');
+            
+            container.innerHTML = categories.map(cat => `
+                <button class="btn category-btn ${cat === 'All' ? 'active' : ''}" onclick="filterProducts('${cat}')">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function filterProducts(category) {
+            currentFilter = category;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.trim() === category);
+            });
+            displayProducts();
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existing = cart.find(item => item.id === product.id);
+            
+            if (existing) {
+                existing.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        function updateCart() {
+            const badge = document.getElementById('cartBadge');
+            const content = document.getElementById('cartContent');
+            const footer = document.getElementById('cartFooter');
+            const total = document.getElementById('cartTotal');
+
+            if (cart.length === 0) {
+                badge.classList.add('hidden');
+                content.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-cart3" style="font-size: 4rem;"></i>
+                        <p class="mt-3">Your cart is empty</p>
+                    </div>
+                `;
+                footer.classList.add('hidden');
+            } else {
+                badge.classList.remove('hidden');
+                badge.textContent = cart.length;
+                
+                content.innerHTML = cart.map(item => `
+                    <div class="border-bottom pb-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">${item.name}</h6>
+                                <p class="small text-muted mb-1">${item.sku}</p>
+                                <p class="text-primary fw-bold mb-0">R ${item.price.toFixed(2)}</p>
+                            </div>
+                            <span class="fs-2 ms-2">${item.emoji}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group btn-group-sm">
+                                <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})" class="btn btn-outline-secondary">-</button>
+                                <button class="btn btn-outline-secondary" disabled>${item.quantity}</button>
+                                <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})" class="btn btn-outline-secondary">+</button>
+                            </div>
+                            <button onclick="removeFromCart(${item.id})" class="btn btn-link text-danger p-0">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+                const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                total.textContent = `R ${totalAmount.toFixed(2)}`;
+                footer.classList.remove('hidden');
+            }
+        }
+
+        function updateQuantity(productId, newQuantity) {
+            if (newQuantity <= 0) {
+                removeFromCart(productId);
+            } else {
+                const item = cart.find(i => i.id === productId);
+                if (item) {
+                    item.quantity = newQuantity;
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCart();
+                }
+            }
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        function toggleCart() {
+            document.getElementById('cartSidebar').classList.toggle('show');
+            document.getElementById('cartBackdrop').classList.toggle('show');
+        }
+
+        function checkout() {
+            alert('Checkout functionality coming soon!');
+        }
+
+        function checkAuth() {
+            const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            const authButtons = document.getElementById('authButtons');
+            const userGreeting = document.getElementById('userGreeting');
+            const userName = document.getElementById('userName');
+
+            if (user) {
+                authButtons.classList.add('hidden');
+                userGreeting.classList.remove('hidden');
+                userName.textContent = user.name;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            displayProducts();
+            createCategoryFilters();
+            updateCart();
+        });
+    </script>
+</body>
+</html>

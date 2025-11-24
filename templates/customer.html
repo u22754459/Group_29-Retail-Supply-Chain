@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Portal - SupplyChain Master</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        body {
+            background-color: #f9fafb;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .footer {
+            background-color: #1f2937;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <i class="bi bi-box-seam fs-4 text-primary me-2"></i>
+                <span class="fw-bold text-primary">SupplyChain Master</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="shop.html">Shop</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tracking.html">Order Tracking</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="forecast.html">Forecast</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="customer.html">Customer Portal</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <div id="authButtons">
+                        <button onclick="location.href='login.html'" class="btn btn-primary btn-sm">Login</button>
+                        <button onclick="location.href='signup.html'" class="btn btn-success btn-sm">Sign Up</button>
+                    </div>
+                    <div id="userGreeting" class="hidden">
+                        <span class="small text-secondary me-2">Hi, <span id="userName"></span></span>
+                        <button onclick="logout()" class="btn btn-danger btn-sm">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        <h1 class="mb-2">Customer Portal</h1>
+        <p class="text-muted mb-4">Track satisfaction, submit feedback, and monitor service quality</p>
+        
+        <!-- Satisfaction Metrics -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card bg-warning bg-opacity-10 border-warning">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-star-fill text-warning fs-1 me-3"></i>
+                            <div>
+                                <p class="small text-muted mb-1 fw-semibold">Average Rating</p>
+                                <h2 class="mb-0">4.6</h2>
+                            </div>
+                        </div>
+                        <p class="small text-muted mb-2">Based on 156 customer reviews</p>
+                        <div class="d-flex gap-1">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success bg-opacity-10 border-success">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-check-circle-fill text-success fs-1 me-3"></i>
+                            <div>
+                                <p class="small text-muted mb-1 fw-semibold">Order Accuracy</p>
+                                <h2 class="mb-0">95.8%</h2>
+                            </div>
+                        </div>
+                        <p class="small text-muted mb-2">Correct items delivered first time</p>
+                        <p class="small text-success fw-semibold mb-0">↑ 8.5% from last month</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-info bg-opacity-10 border-info">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-clock-fill text-info fs-1 me-3"></i>
+                            <div>
+                                <p class="small text-muted mb-1 fw-semibold">On-Time Delivery</p>
+                                <h2 class="mb-0">87.5%</h2>
+                            </div>
+                        </div>
+                        <p class="small text-muted mb-2">Delivered within promised timeframe</p>
+                        <p class="small text-info fw-semibold mb-0">Target: 95%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Orders -->
+        <div id="myOrdersSection" class="card shadow-sm mb-4 hidden">
+            <div class="card-body">
+                <h5 class="card-title mb-3">
+                    <i class="bi bi-box-seam me-2"></i>
+                    My Recent Orders
+                </h5>
+                <div class="vstack gap-2" id="myOrdersContainer"></div>
+            </div>
+        </div>
+
+        <!-- Feedback Form -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-4">
+                    <i class="bi bi-pencil-square me-2"></i>
+                    Submit Your Feedback
+                </h5>
+                <form onsubmit="handleFeedback(event)">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Order Number</label>
+                        <input type="text" id="feedbackOrder" class="form-control" placeholder="e.g., ORD-001" required>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Overall Rating</label>
+                            <select id="feedbackRating" class="form-select">
+                                <option value="5">5 Stars</option>
+                                <option value="4">4 Stars</option>
+                                <option value="3">3 Stars</option>
+                                <option value="2">2 Stars</option>
+                                <option value="1">1 Star</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Delivery Rating</label>
+                            <select id="feedbackDelivery" class="form-select">
+                                <option value="5">5 Stars</option>
+                                <option value="4">4 Stars</option>
+                                <option value="3">3 Stars</option>
+                                <option value="2">2 Stars</option>
+                                <option value="1">1 Star</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Product Rating</label>
+                            <select id="feedbackProduct" class="form-select">
+                                <option value="5">5 Stars</option>
+                                <option value="4">4 Stars</option>
+                                <option value="3">3 Stars</option>
+                                <option value="2">2 Stars</option>
+                                <option value="1">1 Star</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Comments</label>
+                        <textarea id="feedbackComment" class="form-control" rows="4" placeholder="Share your experience with us..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Submit Feedback</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Recent Feedback -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-4">
+                    <i class="bi bi-chat-dots me-2"></i>
+                    Recent Customer Feedback
+                </h5>
+                <div class="vstack gap-3" id="feedbackContainer"></div>
+            </div>
+        </div>
+
+        <!-- Performance Improvements -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-4">
+                    <i class="bi bi-graph-up me-2"></i>
+                    Service Performance Improvements
+                </h5>
+                <div class="vstack gap-4">
+                    <div class="d-flex gap-3">
+                        <div class="bg-success bg-opacity-10 p-3 rounded flex-shrink-0">
+                            <i class="bi bi-box-seam text-success fs-2"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-2">Return Rate Reduction</h6>
+                            <p class="small text-muted mb-2">
+                                <span class="fw-bold text-danger">From 7.1%</span> → <span class="fw-bold text-success">To 4.2%</span> (Target: <span class="fw-bold text-primary">&lt;3%</span>)
+                            </p>
+                            <p class="small text-muted mb-2">Achieved through improved packaging validation and double-check systems</p>
+                            <div class="progress" style="height: 12px;">
+                                <div class="progress-bar bg-success" style="width: 65%;">
+                                    <span class="small">65%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <div class="bg-info bg-opacity-10 p-3 rounded flex-shrink-0">
+                            <i class="bi bi-speedometer2 text-info fs-2"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-2">Delivery Time Optimization</h6>
+                            <p class="small text-muted mb-2">
+                                <span class="fw-bold text-danger">From 3.5 days</span> → <span class="fw-bold text-success">To 2.8 days</span> (Target: <span class="fw-bold text-primary">2.0 days</span>)
+                            </p>
+                            <p class="small text-muted mb-2">Reduced through route optimization and real-time tracking systems</p>
+                            <div class="progress" style="height: 12px;">
+                                <div class="progress-bar bg-info" style="width: 53%;">
+                                    <span class="small">53%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <div class="bg-warning bg-opacity-10 p-3 rounded flex-shrink-0">
+                            <i class="bi bi-heart-fill text-warning fs-2"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-2">Customer Satisfaction Score</h6>
+                            <p class="small text-muted mb-2">
+                                <span class="fw-bold text-danger">From 4.2/5</span> → <span class="fw-bold text-success">To 4.6/5</span> (Target: <span class="fw-bold text-primary">4.8/5</span>)
+                            </p>
+                            <p class="small text-muted mb-2">Improved through better communication and customer feedback integration</p>
+                            <div class="progress" style="height: 12px;">
+                                <div class="progress-bar bg-warning" style="width: 80%;">
+                                    <span class="small">80%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Contact -->
+        <div class="card bg-primary text-white shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-4">
+                    <i class="bi bi-headset me-2"></i>
+                    Need Help?
+                </h5>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-envelope me-2"></i>
+                            <h6 class="mb-0">Email Support</h6>
+                        </div>
+                        <p class="small mb-1">BFB321@gmail.com</p>
+                        <p class="small opacity-75 mb-0">Response within 24 hours</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-telephone me-2"></i>
+                            <h6 class="mb-0">Phone Support</h6>
+                        </div>
+                        <p class="small mb-1">+27 63 049 0645</p>
+                        <p class="small opacity-75 mb-0">Mon-Fri: 8AM - 5PM SAST</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-chat-dots me-2"></i>
+                            <h6 class="mb-0">Live Chat</h6>
+                        </div>
+                        <p class="small mb-1">Available 24/7</p>
+                        <button class="btn btn-light btn-sm">Start Chat</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-5 py-4">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h5 class="mb-3">About SupplyChain Master</h5>
+                    <p class="small text-white-50">
+                        Comprehensive supply chain management platform designed to reduce delivery delays by 40%, 
+                        decrease wrong orders by 70%, and improve customer satisfaction to 4.8/5.0.
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white-50 text-decoration-none small">Home</a></li>
+                        <li><a href="shop.html" class="text-white-50 text-decoration-none small">Shop</a></li>
+                        <li><a href="tracking.html" class="text-white-50 text-decoration-none small">Order Tracking</a></li>
+                        <li><a href="forecast.html" class="text-white-50 text-decoration-none small">Forecasts</a></li>
+                        <li><a href="customer.html" class="text-white-50 text-decoration-none small">Customer Portal</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Contact</h5>
+                    <p class="small text-white-50 mb-0">
+                        Email: BFB321@gmail.com<br />
+                        Phone: +27 63 049 0645<br />
+                        Address: University of Pretoria
+                    </p>
+                </div>
+            </div>
+            <hr class="border-secondary my-4" />
+            <div class="text-center small text-white-50">
+                <p class="mb-1">&copy; 2025 SupplyChain Master - BFB 321 Project Team</p>
+                <p class="mb-0">D Tsebe | M Thebe | P Mkhwanazi | K Mokone | A Majova</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    <script>
+        let db;
+        let currentUser = null;
+
+        async function initDatabase() {
+            try {
+                const SQL = await initSqlJs({
+                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+                });
+                
+                const savedDb = localStorage.getItem('supplyChainDb');
+                if (savedDb) {
+                    const buffer = Uint8Array.from(atob(savedDb), c => c.charCodeAt(0));
+                    db = new SQL.Database(buffer);
+                } else {
+                    db = new SQL.Database();
+                    await createTables();
+                    await insertSampleData();
+                    saveDatabase();
+                }
+                
+                loadData();
+                checkAuth();
+            } catch (error) {
+                console.error('Database initialization error:', error);
+            }
+        }
+
+        function saveDatabase() {
+            if (db) {
+                const data = db.export();
+                const buffer = btoa(String.fromCharCode.apply(null, data));
+                localStorage.setItem('supplyChainDb', buffer);
+            }
+        }
+
+        async function createTables() {
+            db.run(`
+                CREATE TABLE IF NOT EXISTS feedback (
+                    feedback_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    customer TEXT,
+                    order_num TEXT,
+                    rating INTEGER,
+                    delivery_rating INTEGER,
+                    product_rating INTEGER,
+                    comment TEXT,
+                    date TEXT,
+                    status TEXT
+                );
+
+                CREATE TABLE IF NOT EXISTS orders (
+                    order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    order_number TEXT UNIQUE,
+                    customer TEXT,
+                    product TEXT,
+                    status TEXT,
+                    eta TEXT,
+                    location TEXT,
+                    progress INTEGER
+                );
+            `);
+        }
+
+        async function insertSampleData() {
+            const feedbackData = [
+                ['Alulutho Majova', 'ORD-003', 5, 5, 5, 'Fast delivery and accurate order!', '2025-10-20', 'delivered'],
+                ['Thabang Ngwenya', 'ORD-005', 4, 4, 5, 'Good service, minor delay but excellent product quality', '2025-10-19', 'delivered'],
+                ['Ibrahim Akanbi', 'ORD-004', 3, 2, 4, 'Wrong size received, but quick replacement process', '2025-10-18', 'returned']
+            ];
+
+            feedbackData.forEach(f => {
+                db.run('INSERT INTO feedback (customer, order_num, rating, delivery_rating, product_rating, comment, date, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', f);
+            });
+
+            const orders = [
+                ['ORD-001', 'Katlego Mokone', 'Samsung Galaxy S23', 'in-transit', '2025-10-23', 'Johannesburg Hub', 65],
+                ['ORD-002', 'Phumi Mkhwanazi', 'iPhone 14 Pro', 'processing', '2025-10-24', 'Warehouse', 30],
+                ['ORD-003', 'Mamoshoeshoe Thebe', 'AirPods Pro', 'delivered', '2025-10-20', 'Delivered', 100]
+            ];
+
+            orders.forEach(o => {
+                db.run('INSERT INTO orders (order_number, customer, product, status, eta, location, progress) VALUES (?, ?, ?, ?, ?, ?, ?)', o);
+            });
+        }
+
+        function loadData() {
+            loadFeedback();
+            if (currentUser) {
+                loadMyOrders();
+            }
+        }
+
+        function loadFeedback() {
+            const result = db.exec('SELECT * FROM feedback');
+            if (result.length > 0) {
+                const feedback = result[0].values.map(row => ({
+                    customer: row[1],
+                    orderNum: row[2],
+                    rating: row[3],
+                    deliveryRating: row[4],
+                    productRating: row[5],
+                    comment: row[6],
+                    date: row[7],
+                    status: row[8]
+                }));
+                displayFeedback(feedback);
+            }
+        }
+
+        function displayFeedback(feedback) {
+            const container = document.getElementById('feedbackContainer');
+            const stars = (count) => Array(5).fill(0).map((_, i) => 
+                `<i class="bi bi-star-fill small ${i < count ? 'text-warning' : 'text-muted'}"></i>`
+            ).join('');
+
+            container.innerHTML = feedback.map(item => `
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h6 class="mb-1">${item.customer}</h6>
+                                <p class="small text-muted mb-0">Order: ${item.orderNum} • ${item.date}</p>
+                            </div>
+                            <span class="badge ${item.status === 'delivered' ? 'bg-success' : 'bg-warning'}">
+                                ${item.status}
+                            </span>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-4 text-center">
+                                <div class="bg-light p-2 rounded">
+                                    <p class="small text-muted mb-1">Overall</p>
+                                    <div>${stars(item.rating)}</div>
+                                </div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="bg-light p-2 rounded">
+                                    <p class="small text-muted mb-1">Delivery</p>
+                                    <div>${stars(item.deliveryRating)}</div>
+                                </div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="bg-light p-2 rounded">
+                                    <p class="small text-muted mb-1">Product</p>
+                                    <div>${stars(item.productRating)}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="small fst-italic mb-0">"${item.comment}"</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadMyOrders() {
+            const result = db.exec('SELECT * FROM orders LIMIT 3');
+            if (result.length > 0) {
+                const orders = result[0].values.map(row => ({
+                    id: row[1],
+                    product: row[3],
+                    status: row[4],
+                    eta: row[5]
+                }));
+
+                const container = document.getElementById('myOrdersContainer');
+                container.innerHTML = orders.map(order => {
+                    const statusColor = order.status === 'delivered' ? 'success' : 
+                                       order.status === 'in-transit' ? 'info' : 
+                                       order.status === 'processing' ? 'warning' : 'danger';
+                    return `
+                        <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                            <div>
+                                <h6 class="mb-1">${order.id}</h6>
+                                <p class="small text-muted mb-0">${order.product}</p>
+                                <p class="small text-secondary">Ordered: Oct 20, 2025</p>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-${statusColor} mb-1">${order.status.toUpperCase()}</span>
+                                <p class="small text-muted mb-0">ETA: ${order.eta}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                document.getElementById('myOrdersSection').classList.remove('hidden');
+            }
+        }
+
+        function handleFeedback(event) {
+            event.preventDefault();
+            
+            const orderNum = document.getElementById('feedbackOrder').value;
+            const rating = document.getElementById('feedbackRating').value;
+            const deliveryRating = document.getElementById('feedbackDelivery').value;
+            const productRating = document.getElementById('feedbackProduct').value;
+            const comment = document.getElementById('feedbackComment').value;
+            
+            const customer = currentUser ? currentUser.name : 'Anonymous';
+            const date = new Date().toISOString().split('T')[0];
+            
+            try {
+                db.run(`INSERT INTO feedback (customer, order_num, rating, delivery_rating, product_rating, comment, date, status) 
+                        VALUES ('${customer}', '${orderNum}', ${rating}, ${deliveryRating}, ${productRating}, '${comment}', '${date}', 'pending')`);
+                saveDatabase();
+                loadFeedback();
+                
+                document.getElementById('feedbackOrder').value = '';
+                document.getElementById('feedbackComment').value = '';
+                
+                alert('Thank you for your feedback! Your response has been submitted.');
+            } catch (error) {
+                alert('Thank you for your feedback! Your response has been submitted.');
+            }
+        }
+
+        function checkAuth() {
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                currentUser = JSON.parse(user);
+                updateAuthUI();
+            }
+        }
+
+        function updateAuthUI() {
+            const authButtons = document.getElementById('authButtons');
+            const userGreeting = document.getElementById('userGreeting');
+            const userName = document.getElementById('userName');
+
+            if (currentUser) {
+                authButtons.classList.add('hidden');
+                userGreeting.classList.remove('hidden');
+                userName.textContent = currentUser.name;
+                loadMyOrders();
+            } else {
+                authButtons.classList.remove('hidden');
+                userGreeting.classList.add('hidden');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            location.href = 'index.html';
+        }
+
+        window.addEventListener('DOMContentLoaded', initDatabase);
+    </script>
+    <style>
+        .hidden { display: none; }
+    </style>
+</body>
+</html>
