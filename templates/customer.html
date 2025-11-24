@@ -28,6 +28,15 @@
             background-color: #1f2937;
             color: white;
         }
+
+        .card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -43,31 +52,15 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="shop.html">Shop</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="tracking.html">Order Tracking</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="forecast.html">Forecast</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="customer.html">Customer Portal</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="tracking.html">Order Tracking</a></li>
+                    <li class="nav-item"><a class="nav-link" href="forecast.html">Forecast</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="customer.html">Customer Portal</a></li>
                 </ul>
                 <div class="d-flex align-items-center gap-3">
-                    <div id="authButtons">
-                        <button onclick="location.href='login.html'" class="btn btn-primary btn-sm">Login</button>
-                        <button onclick="location.href='signup.html'" class="btn btn-success btn-sm">Sign Up</button>
-                    </div>
-                    <div id="userGreeting" class="hidden">
-                        <span class="small text-secondary me-2">Hi, <span id="userName"></span></span>
-                        <button onclick="logout()" class="btn btn-danger btn-sm">Logout</button>
-                    </div>
+                    <a href="login.html" class="btn btn-primary btn-sm">Login</a>
+                    <a href="signup.html" class="btn btn-success btn-sm">Sign Up</a>
                 </div>
             </div>
         </div>
@@ -134,13 +127,47 @@
         </div>
 
         <!-- My Orders -->
-        <div id="myOrdersSection" class="card shadow-sm mb-4 hidden">
+        <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <h5 class="card-title mb-3">
                     <i class="bi bi-box-seam me-2"></i>
                     My Recent Orders
                 </h5>
-                <div class="vstack gap-2" id="myOrdersContainer"></div>
+                <div class="vstack gap-2">
+                    <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                        <div>
+                            <h6 class="mb-1">ORD-001</h6>
+                            <p class="small text-muted mb-0">Samsung Galaxy S23</p>
+                            <p class="small text-secondary">Ordered: Oct 20, 2025</p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-info mb-1">IN-TRANSIT</span>
+                            <p class="small text-muted mb-0">ETA: 2025-10-23</p>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                        <div>
+                            <h6 class="mb-1">ORD-002</h6>
+                            <p class="small text-muted mb-0">iPhone 14 Pro</p>
+                            <p class="small text-secondary">Ordered: Oct 20, 2025</p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-warning mb-1">PROCESSING</span>
+                            <p class="small text-muted mb-0">ETA: 2025-10-24</p>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                        <div>
+                            <h6 class="mb-1">ORD-003</h6>
+                            <p class="small text-muted mb-0">AirPods Pro</p>
+                            <p class="small text-secondary">Ordered: Oct 20, 2025</p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-success mb-1">DELIVERED</span>
+                            <p class="small text-muted mb-0">ETA: 2025-10-20</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -151,15 +178,15 @@
                     <i class="bi bi-pencil-square me-2"></i>
                     Submit Your Feedback
                 </h5>
-                <form onsubmit="handleFeedback(event)">
+                <form>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Order Number</label>
-                        <input type="text" id="feedbackOrder" class="form-control" placeholder="e.g., ORD-001" required>
+                        <input type="text" class="form-control" placeholder="e.g., ORD-001" required>
                     </div>
                     <div class="row g-3 mb-3">
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Overall Rating</label>
-                            <select id="feedbackRating" class="form-select">
+                            <select class="form-select">
                                 <option value="5">5 Stars</option>
                                 <option value="4">4 Stars</option>
                                 <option value="3">3 Stars</option>
@@ -169,7 +196,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Delivery Rating</label>
-                            <select id="feedbackDelivery" class="form-select">
+                            <select class="form-select">
                                 <option value="5">5 Stars</option>
                                 <option value="4">4 Stars</option>
                                 <option value="3">3 Stars</option>
@@ -179,7 +206,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Product Rating</label>
-                            <select id="feedbackProduct" class="form-select">
+                            <select class="form-select">
                                 <option value="5">5 Stars</option>
                                 <option value="4">4 Stars</option>
                                 <option value="3">3 Stars</option>
@@ -190,7 +217,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Comments</label>
-                        <textarea id="feedbackComment" class="form-control" rows="4" placeholder="Share your experience with us..." required></textarea>
+                        <textarea class="form-control" rows="4" placeholder="Share your experience with us..." required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Submit Feedback</button>
                 </form>
@@ -204,7 +231,163 @@
                     <i class="bi bi-chat-dots me-2"></i>
                     Recent Customer Feedback
                 </h5>
-                <div class="vstack gap-3" id="feedbackContainer"></div>
+                <div class="vstack gap-3">
+                    <!-- Feedback 1 -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h6 class="mb-1">Alulutho Majova</h6>
+                                    <p class="small text-muted mb-0">Order: ORD-003 • 2025-10-20</p>
+                                </div>
+                                <span class="badge bg-success">delivered</span>
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-4 text-center">
+                                    <div class="bg-light p-2 rounded">
+                                        <p class="small text-muted mb-1">Overall</p>
+                                        <div>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <div class="bg-light p-2 rounded">
+                                        <p class="small text-muted mb-1">Delivery</p>
+                                        <div>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <div class="bg-light p-2 rounded">
+                                        <p class="small text-muted mb-1">Product</p>
+                                        <div>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="small fst-italic mb-0">"Fast delivery and accurate order!"</p>
+                        </div>
+                    </div>
+
+                    <!-- Feedback 2 -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h6 class="mb-1">Thabang Ngwenya</h6>
+                                    <p class="small text-muted mb-0">Order: ORD-005 • 2025-10-19</p>
+                                </div>
+                                <span class="badge bg-success">delivered</span>
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-4 text-center">
+                                    <div class="bg-light p-2 rounded">
+                                        <p class="small text-muted mb-1">Overall</p>
+                                        <div>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <div class="bg-light p-2 rounded">
+                                        <p class="small text-muted mb-1">Delivery</p>
+                                        <div>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <div class="bg-light p-2 rounded">
+                                        <p class="small text-muted mb-1">Product</p>
+                                        <div>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="small fst-italic mb-0">"Good service, minor delay but excellent product quality"</p>
+                        </div>
+                    </div>
+
+                    <!-- Feedback 3 -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h6 class="mb-1">Ibrahim Akanbi</h6>
+                                    <p class="small text-muted mb-0">Order: ORD-004 • 2025-10-18</p>
+                                </div>
+                                <span class="badge bg-warning">returned</span>
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-4 text-center">
+                                    <div class="bg-light p-2 rounded">
+                                        <p class="small text-muted mb-1">Overall</p>
+                                        <div>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-muted"></i>
+                                            <i class="bi bi-star-fill small text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <div class="bg-light p-2 rounded">
+                                        <p class="small text-muted mb-1">Delivery</p>
+                                        <div>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-muted"></i>
+                                            <i class="bi bi-star-fill small text-muted"></i>
+                                            <i class="bi bi-star-fill small text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <div class="bg-light p-2 rounded">
+                                        <p class="small text-muted mb-1">Product</p>
+                                        <div>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-warning"></i>
+                                            <i class="bi bi-star-fill small text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="small fst-italic mb-0">"Wrong size received, but quick replacement process"</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -345,256 +528,5 @@
             </div>
         </div>
     </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
-    <script>
-        let db;
-        let currentUser = null;
-
-        async function initDatabase() {
-            try {
-                const SQL = await initSqlJs({
-                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
-                });
-                
-                const savedDb = localStorage.getItem('supplyChainDb');
-                if (savedDb) {
-                    const buffer = Uint8Array.from(atob(savedDb), c => c.charCodeAt(0));
-                    db = new SQL.Database(buffer);
-                } else {
-                    db = new SQL.Database();
-                    await createTables();
-                    await insertSampleData();
-                    saveDatabase();
-                }
-                
-                loadData();
-                checkAuth();
-            } catch (error) {
-                console.error('Database initialization error:', error);
-            }
-        }
-
-        function saveDatabase() {
-            if (db) {
-                const data = db.export();
-                const buffer = btoa(String.fromCharCode.apply(null, data));
-                localStorage.setItem('supplyChainDb', buffer);
-            }
-        }
-
-        async function createTables() {
-            db.run(`
-                CREATE TABLE IF NOT EXISTS feedback (
-                    feedback_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    customer TEXT,
-                    order_num TEXT,
-                    rating INTEGER,
-                    delivery_rating INTEGER,
-                    product_rating INTEGER,
-                    comment TEXT,
-                    date TEXT,
-                    status TEXT
-                );
-
-                CREATE TABLE IF NOT EXISTS orders (
-                    order_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    order_number TEXT UNIQUE,
-                    customer TEXT,
-                    product TEXT,
-                    status TEXT,
-                    eta TEXT,
-                    location TEXT,
-                    progress INTEGER
-                );
-            `);
-        }
-
-        async function insertSampleData() {
-            const feedbackData = [
-                ['Alulutho Majova', 'ORD-003', 5, 5, 5, 'Fast delivery and accurate order!', '2025-10-20', 'delivered'],
-                ['Thabang Ngwenya', 'ORD-005', 4, 4, 5, 'Good service, minor delay but excellent product quality', '2025-10-19', 'delivered'],
-                ['Ibrahim Akanbi', 'ORD-004', 3, 2, 4, 'Wrong size received, but quick replacement process', '2025-10-18', 'returned']
-            ];
-
-            feedbackData.forEach(f => {
-                db.run('INSERT INTO feedback (customer, order_num, rating, delivery_rating, product_rating, comment, date, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', f);
-            });
-
-            const orders = [
-                ['ORD-001', 'Katlego Mokone', 'Samsung Galaxy S23', 'in-transit', '2025-10-23', 'Johannesburg Hub', 65],
-                ['ORD-002', 'Phumi Mkhwanazi', 'iPhone 14 Pro', 'processing', '2025-10-24', 'Warehouse', 30],
-                ['ORD-003', 'Mamoshoeshoe Thebe', 'AirPods Pro', 'delivered', '2025-10-20', 'Delivered', 100]
-            ];
-
-            orders.forEach(o => {
-                db.run('INSERT INTO orders (order_number, customer, product, status, eta, location, progress) VALUES (?, ?, ?, ?, ?, ?, ?)', o);
-            });
-        }
-
-        function loadData() {
-            loadFeedback();
-            if (currentUser) {
-                loadMyOrders();
-            }
-        }
-
-        function loadFeedback() {
-            const result = db.exec('SELECT * FROM feedback');
-            if (result.length > 0) {
-                const feedback = result[0].values.map(row => ({
-                    customer: row[1],
-                    orderNum: row[2],
-                    rating: row[3],
-                    deliveryRating: row[4],
-                    productRating: row[5],
-                    comment: row[6],
-                    date: row[7],
-                    status: row[8]
-                }));
-                displayFeedback(feedback);
-            }
-        }
-
-        function displayFeedback(feedback) {
-            const container = document.getElementById('feedbackContainer');
-            const stars = (count) => Array(5).fill(0).map((_, i) => 
-                `<i class="bi bi-star-fill small ${i < count ? 'text-warning' : 'text-muted'}"></i>`
-            ).join('');
-
-            container.innerHTML = feedback.map(item => `
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <h6 class="mb-1">${item.customer}</h6>
-                                <p class="small text-muted mb-0">Order: ${item.orderNum} • ${item.date}</p>
-                            </div>
-                            <span class="badge ${item.status === 'delivered' ? 'bg-success' : 'bg-warning'}">
-                                ${item.status}
-                            </span>
-                        </div>
-                        <div class="row g-2 mb-3">
-                            <div class="col-4 text-center">
-                                <div class="bg-light p-2 rounded">
-                                    <p class="small text-muted mb-1">Overall</p>
-                                    <div>${stars(item.rating)}</div>
-                                </div>
-                            </div>
-                            <div class="col-4 text-center">
-                                <div class="bg-light p-2 rounded">
-                                    <p class="small text-muted mb-1">Delivery</p>
-                                    <div>${stars(item.deliveryRating)}</div>
-                                </div>
-                            </div>
-                            <div class="col-4 text-center">
-                                <div class="bg-light p-2 rounded">
-                                    <p class="small text-muted mb-1">Product</p>
-                                    <div>${stars(item.productRating)}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="small fst-italic mb-0">"${item.comment}"</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function loadMyOrders() {
-            const result = db.exec('SELECT * FROM orders LIMIT 3');
-            if (result.length > 0) {
-                const orders = result[0].values.map(row => ({
-                    id: row[1],
-                    product: row[3],
-                    status: row[4],
-                    eta: row[5]
-                }));
-
-                const container = document.getElementById('myOrdersContainer');
-                container.innerHTML = orders.map(order => {
-                    const statusColor = order.status === 'delivered' ? 'success' : 
-                                       order.status === 'in-transit' ? 'info' : 
-                                       order.status === 'processing' ? 'warning' : 'danger';
-                    return `
-                        <div class="d-flex justify-content-between align-items-center p-3 border rounded">
-                            <div>
-                                <h6 class="mb-1">${order.id}</h6>
-                                <p class="small text-muted mb-0">${order.product}</p>
-                                <p class="small text-secondary">Ordered: Oct 20, 2025</p>
-                            </div>
-                            <div class="text-end">
-                                <span class="badge bg-${statusColor} mb-1">${order.status.toUpperCase()}</span>
-                                <p class="small text-muted mb-0">ETA: ${order.eta}</p>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-                document.getElementById('myOrdersSection').classList.remove('hidden');
-            }
-        }
-
-        function handleFeedback(event) {
-            event.preventDefault();
-            
-            const orderNum = document.getElementById('feedbackOrder').value;
-            const rating = document.getElementById('feedbackRating').value;
-            const deliveryRating = document.getElementById('feedbackDelivery').value;
-            const productRating = document.getElementById('feedbackProduct').value;
-            const comment = document.getElementById('feedbackComment').value;
-            
-            const customer = currentUser ? currentUser.name : 'Anonymous';
-            const date = new Date().toISOString().split('T')[0];
-            
-            try {
-                db.run(`INSERT INTO feedback (customer, order_num, rating, delivery_rating, product_rating, comment, date, status) 
-                        VALUES ('${customer}', '${orderNum}', ${rating}, ${deliveryRating}, ${productRating}, '${comment}', '${date}', 'pending')`);
-                saveDatabase();
-                loadFeedback();
-                
-                document.getElementById('feedbackOrder').value = '';
-                document.getElementById('feedbackComment').value = '';
-                
-                alert('Thank you for your feedback! Your response has been submitted.');
-            } catch (error) {
-                alert('Thank you for your feedback! Your response has been submitted.');
-            }
-        }
-
-        function checkAuth() {
-            const user = localStorage.getItem('currentUser');
-            if (user) {
-                currentUser = JSON.parse(user);
-                updateAuthUI();
-            }
-        }
-
-        function updateAuthUI() {
-            const authButtons = document.getElementById('authButtons');
-            const userGreeting = document.getElementById('userGreeting');
-            const userName = document.getElementById('userName');
-
-            if (currentUser) {
-                authButtons.classList.add('hidden');
-                userGreeting.classList.remove('hidden');
-                userName.textContent = currentUser.name;
-                loadMyOrders();
-            } else {
-                authButtons.classList.remove('hidden');
-                userGreeting.classList.add('hidden');
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('currentUser');
-            currentUser = null;
-            location.href = 'index.html';
-        }
-
-        window.addEventListener('DOMContentLoaded', initDatabase);
-    </script>
-    <style>
-        .hidden { display: none; }
-    </style>
 </body>
 </html>
