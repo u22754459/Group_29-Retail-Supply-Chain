@@ -37,34 +37,6 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-
-        .loading-spinner {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .loading-spinner.active {
-            display: block;
-        }
-
-        .alert {
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .star-rating {
-            display: inline-flex;
-            gap: 2px;
-        }
-
-        .feedback-card {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
     </style>
 </head>
 <body>
@@ -88,8 +60,8 @@
                 </ul>
                 <div class="d-flex align-items-center gap-3">
                     {% if session.user_id %}
-                        <span class="text-muted small">Welcome, {{ session.user_name }}</span>
-                        <a href="{{ url_for('logout') }}" class="btn btn-outline-primary btn-sm">Logout</a>
+                        <span class="text-muted">Hello, {{ session.user_name }}</span>
+                        <a href="{{ url_for('logout') }}" class="btn btn-outline-secondary btn-sm">Logout</a>
                     {% else %}
                         <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">Login</a>
                         <a href="{{ url_for('signup') }}" class="btn btn-success btn-sm">Sign Up</a>
@@ -100,18 +72,18 @@
     </nav>
 
     <!-- Flash Messages -->
-    <div class="container mt-3">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mt-3">
                 {% for category, message in messages %}
                     <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
+            </div>
+        {% endif %}
+    {% endwith %}
 
     <!-- Main Content -->
     <div class="container py-4">
@@ -127,14 +99,18 @@
                             <i class="bi bi-star-fill text-warning fs-1 me-3"></i>
                             <div>
                                 <p class="small text-muted mb-1 fw-semibold">Average Rating</p>
-                                <h2 class="mb-0">{{ metrics.avg_rating if metrics else '0.0' }}</h2>
+                                <h2 class="mb-0">{{ metrics.avg_rating or '0.0' }}</h2>
                             </div>
                         </div>
-                        <p class="small text-muted mb-2">Based on {{ metrics.total_reviews if metrics else 0 }} customer reviews</p>
+                        <p class="small text-muted mb-2">Based on {{ metrics.total_reviews or 0 }} customer reviews</p>
                         <div class="d-flex gap-1">
-                            {% set rating = metrics.avg_rating if metrics else 0 %}
+                            {% set rating = metrics.avg_rating|float %}
                             {% for i in range(1, 6) %}
-                                <i class="bi bi-star-fill {% if i <= rating %}text-warning{% else %}text-muted{% endif %}"></i>
+                                {% if i <= rating %}
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                {% else %}
+                                    <i class="bi bi-star-fill text-muted"></i>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
@@ -146,12 +122,12 @@
                         <div class="d-flex align-items-center mb-3">
                             <i class="bi bi-check-circle-fill text-success fs-1 me-3"></i>
                             <div>
-                                <p class="small text-muted mb-1 fw-semibold">Delivery Rating</p>
-                                <h2 class="mb-0">{{ metrics.avg_delivery if metrics else '0.0' }}</h2>
+                                <p class="small text-muted mb-1 fw-semibold">Order Accuracy</p>
+                                <h2 class="mb-0">95.8%</h2>
                             </div>
                         </div>
-                        <p class="small text-muted mb-2">Average delivery experience rating</p>
-                        <p class="small text-success fw-semibold mb-0">↑ Customer satisfaction</p>
+                        <p class="small text-muted mb-2">Correct items delivered first time</p>
+                        <p class="small text-success fw-semibold mb-0">↑ 8.5% from last month</p>
                     </div>
                 </div>
             </div>
@@ -159,14 +135,14 @@
                 <div class="card bg-info bg-opacity-10 border-info">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
-                            <i class="bi bi-box-fill text-info fs-1 me-3"></i>
+                            <i class="bi bi-clock-fill text-info fs-1 me-3"></i>
                             <div>
-                                <p class="small text-muted mb-1 fw-semibold">Product Rating</p>
-                                <h2 class="mb-0">{{ metrics.avg_product if metrics else '0.0' }}</h2>
+                                <p class="small text-muted mb-1 fw-semibold">On-Time Delivery</p>
+                                <h2 class="mb-0">87.5%</h2>
                             </div>
                         </div>
-                        <p class="small text-muted mb-2">Average product quality rating</p>
-                        <p class="small text-info fw-semibold mb-0">Quality focused</p>
+                        <p class="small text-muted mb-2">Delivered within promised timeframe</p>
+                        <p class="small text-info fw-semibold mb-0">Target: 95%</p>
                     </div>
                 </div>
             </div>
@@ -180,15 +156,13 @@
                     Submit Your Feedback
                 </h5>
                 <form method="POST" action="{{ url_for('customer') }}">
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Your Name</label>
-                            <input type="text" class="form-control" name="customer_name" placeholder="John Doe" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Email Address</label>
-                            <input type="email" class="form-control" name="customer_email" placeholder="john@example.com">
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Your Name</label>
+                        <input type="text" class="form-control" name="customer_name" placeholder="Enter your name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email (Optional)</label>
+                        <input type="email" class="form-control" name="customer_email" placeholder="your.email@example.com">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Order Number</label>
@@ -197,7 +171,7 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Overall Rating</label>
-                            <select class="form-select" name="rating">
+                            <select class="form-select" name="rating" required>
                                 <option value="5">5 Stars - Excellent</option>
                                 <option value="4">4 Stars - Good</option>
                                 <option value="3">3 Stars - Average</option>
@@ -207,7 +181,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Delivery Rating</label>
-                            <select class="form-select" name="delivery_rating">
+                            <select class="form-select" name="delivery_rating" required>
                                 <option value="5">5 Stars - Excellent</option>
                                 <option value="4">4 Stars - Good</option>
                                 <option value="3">3 Stars - Average</option>
@@ -217,7 +191,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Product Rating</label>
-                            <select class="form-select" name="product_rating">
+                            <select class="form-select" name="product_rating" required>
                                 <option value="5">5 Stars - Excellent</option>
                                 <option value="4">4 Stars - Good</option>
                                 <option value="3">3 Stars - Average</option>
@@ -228,11 +202,9 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Comments</label>
-                        <textarea class="form-control" name="comment" rows="4" placeholder="Share your experience with us..." required></textarea>
+                        <textarea class="form-control" rows="4" name="comment" placeholder="Share your experience with us..." required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-send me-2"></i>Submit Feedback
-                    </button>
+                    <button type="submit" class="btn btn-primary w-100">Submit Feedback</button>
                 </form>
             </div>
         </div>
@@ -244,60 +216,125 @@
                     <i class="bi bi-chat-dots me-2"></i>
                     Recent Customer Feedback
                 </h5>
-                <div id="feedbackList" class="vstack gap-3">
+                <div class="vstack gap-3">
                     {% if feedback_list %}
                         {% for feedback in feedback_list %}
-                        <div class="feedback-card">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <h6 class="mb-1">{{ feedback.customer_name }}</h6>
-                                    <p class="small text-muted mb-0">Order: {{ feedback.order_number }} • {{ feedback.feedback_date }}</p>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h6 class="mb-1">{{ feedback.customer_name }}</h6>
+                                        <p class="small text-muted mb-0">Order: {{ feedback.order_number }} • {{ feedback.feedback_date }}</p>
+                                    </div>
+                                    <span class="badge bg-{{ 'success' if feedback.order_status == 'delivered' else 'warning' }}">
+                                        {{ feedback.order_status }}
+                                    </span>
                                 </div>
-                                <span class="badge bg-{% if feedback.order_status == 'delivered' %}success{% elif feedback.order_status == 'returned' %}warning{% else %}info{% endif %}">
-                                    {{ feedback.order_status }}
-                                </span>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-4 text-center">
+                                        <div class="bg-light p-2 rounded">
+                                            <p class="small text-muted mb-1">Overall</p>
+                                            <div>
+                                                {% for i in range(1, 6) %}
+                                                    <i class="bi bi-star-fill small {{ 'text-warning' if i <= feedback.rating else 'text-muted' }}"></i>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <div class="bg-light p-2 rounded">
+                                            <p class="small text-muted mb-1">Delivery</p>
+                                            <div>
+                                                {% for i in range(1, 6) %}
+                                                    <i class="bi bi-star-fill small {{ 'text-warning' if i <= feedback.delivery_rating else 'text-muted' }}"></i>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <div class="bg-light p-2 rounded">
+                                            <p class="small text-muted mb-1">Product</p>
+                                            <div>
+                                                {% for i in range(1, 6) %}
+                                                    <i class="bi bi-star-fill small {{ 'text-warning' if i <= feedback.product_rating else 'text-muted' }}"></i>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="small fst-italic mb-0">"{{ feedback.comment }}"</p>
                             </div>
-                            <div class="row g-2 mb-3">
-                                <div class="col-4 text-center">
-                                    <div class="bg-light p-2 rounded">
-                                        <p class="small text-muted mb-1">Overall</p>
-                                        <div class="star-rating">
-                                            {% for i in range(1, 6) %}
-                                                <i class="bi bi-star-fill small {% if i <= feedback.rating %}text-warning{% else %}text-muted{% endif %}"></i>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="bg-light p-2 rounded">
-                                        <p class="small text-muted mb-1">Delivery</p>
-                                        <div class="star-rating">
-                                            {% for i in range(1, 6) %}
-                                                <i class="bi bi-star-fill small {% if i <= feedback.delivery_rating %}text-warning{% else %}text-muted{% endif %}"></i>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="bg-light p-2 rounded">
-                                        <p class="small text-muted mb-1">Product</p>
-                                        <div class="star-rating">
-                                            {% for i in range(1, 6) %}
-                                                <i class="bi bi-star-fill small {% if i <= feedback.product_rating %}text-warning{% else %}text-muted{% endif %}"></i>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="small fst-italic mb-0">"{{ feedback.comment }}"</p>
                         </div>
                         {% endfor %}
                     {% else %}
-                        <div class="text-center py-4 text-muted">
-                            <i class="bi bi-chat-dots fs-1"></i>
-                            <p class="mt-2">No feedback available yet</p>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            No feedback submitted yet. Be the first to share your experience!
                         </div>
                     {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Improvements -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-4">
+                    <i class="bi bi-graph-up me-2"></i>
+                    Service Performance Improvements
+                </h5>
+                <div class="vstack gap-4">
+                    <div class="d-flex gap-3">
+                        <div class="bg-success bg-opacity-10 p-3 rounded flex-shrink-0">
+                            <i class="bi bi-box-seam text-success fs-2"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-2">Return Rate Reduction</h6>
+                            <p class="small text-muted mb-2">
+                                <span class="fw-bold text-danger">From 7.1%</span> → <span class="fw-bold text-success">To 4.2%</span> (Target: <span class="fw-bold text-primary">&lt;3%</span>)
+                            </p>
+                            <p class="small text-muted mb-2">Achieved through improved packaging validation and double-check systems</p>
+                            <div class="progress" style="height: 12px;">
+                                <div class="progress-bar bg-success" style="width: 65%;">
+                                    <span class="small">65%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <div class="bg-info bg-opacity-10 p-3 rounded flex-shrink-0">
+                            <i class="bi bi-speedometer2 text-info fs-2"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-2">Delivery Time Optimization</h6>
+                            <p class="small text-muted mb-2">
+                                <span class="fw-bold text-danger">From 3.5 days</span> → <span class="fw-bold text-success">To 2.8 days</span> (Target: <span class="fw-bold text-primary">2.0 days</span>)
+                            </p>
+                            <p class="small text-muted mb-2">Reduced through route optimization and real-time tracking systems</p>
+                            <div class="progress" style="height: 12px;">
+                                <div class="progress-bar bg-info" style="width: 53%;">
+                                    <span class="small">53%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <div class="bg-warning bg-opacity-10 p-3 rounded flex-shrink-0">
+                            <i class="bi bi-heart-fill text-warning fs-2"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-2">Customer Satisfaction Score</h6>
+                            <p class="small text-muted mb-2">
+                                <span class="fw-bold text-danger">From 4.2/5</span> → <span class="fw-bold text-success">To {{ metrics.avg_rating }}/5</span> (Target: <span class="fw-bold text-primary">4.8/5</span>)
+                            </p>
+                            <p class="small text-muted mb-2">Improved through better communication and customer feedback integration</p>
+                            <div class="progress" style="height: 12px;">
+                                <div class="progress-bar bg-warning" style="width: 80%;">
+                                    <span class="small">80%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -332,7 +369,7 @@
                             <h6 class="mb-0">Live Chat</h6>
                         </div>
                         <p class="small mb-1">Available 24/7</p>
-                        <button class="btn btn-light btn-sm">Start Chat</button>
+                        <a href="mailto:BFB321@gmail.com" class="btn btn-light btn-sm">Contact Us</a>
                     </div>
                 </div>
             </div>
@@ -372,7 +409,7 @@
             <hr class="border-secondary my-4" />
             <div class="text-center small text-white-50">
                 <p class="mb-1">&copy; 2025 SupplyChain Master - BFB 321 Project Team</p>
-                <p class="mb-0">D Tsebe | M Thebe | P Mkhwanazi | K Mokone</p>
+                <p class="mb-0">D Tsebe | M Thebe | P Mkhwanazi | K Mokone | A Majova</p>
             </div>
         </div>
     </footer>
