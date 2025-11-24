@@ -228,7 +228,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 - Deleting a user should handle associated orders (cascade or restrict)
 ```
 ---
-
+```
 #### 2. PRODUCTS ↔ ORDERS
 **Relationship Type**: One-to-Many  
 **Description**: One product can appear in multiple orders  
@@ -247,7 +247,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 - Product cannot be deleted if active orders exist
 ```
 ---
-
+```
 #### 3. ORDERS ↔ FEEDBACK
 **Relationship Type**: One-to-One  
 **Description**: Each order can have one feedback entry  
@@ -266,7 +266,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 - Orders without feedback are allowed (not all customers provide feedback)
 ```
 ---
-
+```
 #### 4. USERS ↔ FEEDBACK
 **Relationship Type**: One-to-Many  
 **Description**: One user can submit multiple feedback entries  
@@ -284,7 +284,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 - User information in feedback should match order information
 ```
 ---
-
+```
 #### 5. PRODUCTS ↔ FORECASTS
 **Relationship Type**: One-to-Many (Categorical)  
 **Description**: Products are grouped by category for forecasting  
@@ -303,6 +303,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 - Reorder recommendations apply to the entire category
 ```
 ---
+```
 ### Relationship Summary Table
 
 | Relationship | Type | Foreign Key | Cascade Behavior | Description |
@@ -328,7 +329,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 | Customer Satisfaction | 4.6/5 | 4.8/5 | ⚠️ |
 ```
 ---
-
+```
 ## Usage Guide
 
 ### For Customers
@@ -351,14 +352,15 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 6. **Use API**: Access RESTful API for programmatic integration
 ```
 ---
+```
 ### For Developers
 1. **API Integration**: Use provided API endpoints for custom integrations
 2. **Database Access**: Query SQLite database directly for custom reports
 3. **Extend Functionality**: Add new routes and templates as needed
 4. **Custom Analytics**: Create new database views for specific metrics
-```
+
 ---
-```
+
 ## Contact Information
 
 **Email**: BFB321@gmail.com  
@@ -371,7 +373,6 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 
 © 2025 SupplyChain Master - BFB 321 Project Team  
 All rights reserved.
-```
 ---
 
 
