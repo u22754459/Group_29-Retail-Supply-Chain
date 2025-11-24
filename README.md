@@ -28,8 +28,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 | D Tsebe | u22729951 |
 | M Thebe | u22754459 | 
 | P Mkhwanazi | u21518689| 
-| K Mokone | u23655144 | 
-| A Majova | u21644782 | 
+| K Mokone | u23655144 |  
 
 **Course**: BFB 321 Project  
 **Institution**: University of Pretoria  
