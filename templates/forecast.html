@@ -30,15 +30,33 @@
         }
 
         .forecast-card {
-            transition: box-shadow 0.2s;
+            transition: all 0.3s ease;
         }
 
         .forecast-card:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
         }
 
-        .hidden {
-            display: none;
+        .stat-box {
+            transition: transform 0.2s;
+        }
+
+        .stat-box:hover {
+            transform: scale(1.05);
+        }
+
+        .badge {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
         }
     </style>
 </head>
@@ -46,7 +64,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
                 <i class="bi bi-box-seam fs-4 text-primary me-2"></i>
                 <span class="fw-bold text-primary">SupplyChain Master</span>
             </a>
@@ -56,30 +74,29 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">Home</a>
+                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="shop.html">Shop</a>
+                        <a class="nav-link" href="{{ url_for('shop') }}">Shop</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="tracking.html">Order Tracking</a>
+                        <a class="nav-link" href="{{ url_for('tracking') }}">Order Tracking</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="forecast.html">Forecast</a>
+                        <a class="nav-link active" href="{{ url_for('forecast') }}">Forecast</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="customer.html">Customer Portal</a>
+                        <a class="nav-link" href="{{ url_for('customer') }}">Customer Portal</a>
                     </li>
                 </ul>
                 <div class="d-flex align-items-center gap-3">
-                    <div id="authButtons">
-                        <button onclick="location.href='login.html'" class="btn btn-primary btn-sm">Login</button>
-                        <button onclick="location.href='signup.html'" class="btn btn-success btn-sm">Sign Up</button>
-                    </div>
-                    <div id="userGreeting" class="hidden">
-                        <span class="small text-secondary me-2">Hi, <span id="userName"></span></span>
-                        <button onclick="logout()" class="btn btn-danger btn-sm">Logout</button>
-                    </div>
+                    {% if session.user_id %}
+                        <span class="small text-secondary me-2">Hi, {{ session.user_name }}</span>
+                        <a href="{{ url_for('logout') }}" class="btn btn-danger btn-sm">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">Login</a>
+                        <a href="{{ url_for('signup') }}" class="btn btn-success btn-sm">Sign Up</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -95,9 +112,66 @@
                     Inventory Analysis & Predictions
                 </h5>
                 <p class="small text-muted mb-4">Real-time inventory analysis based on historical sales data</p>
-                <div class="vstack gap-3" id="forecastsContainer"></div>
+                
+                {% if forecasts %}
+                <div class="vstack gap-3">
+                    {% for forecast in forecasts %}
+                    <div class="card forecast-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="mb-1">{{ forecast.category_name or 'Unknown Category' }}</h5>
+                                    <p class="small fw-medium mb-0 {% if forecast.status == 'optimal' %}text-success{% else %}text-warning{% endif %}">
+                                        Status: {{ forecast.status|upper }}
+                                    </p>
+                                </div>
+                                {% if forecast.current_stock < forecast.reorder_point %}
+                                <span class="badge bg-danger">Reorder Required</span>
+                                {% endif %}
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-4">
+                                    <div class="bg-primary bg-opacity-10 p-3 rounded stat-box">
+                                        <p class="small text-muted mb-1">Current Stock</p>
+                                        <h4 class="text-primary mb-0">{{ forecast.current_stock }}</h4>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="bg-info bg-opacity-10 p-3 rounded stat-box">
+                                        <p class="small text-muted mb-1">Forecasted Demand</p>
+                                        <h4 class="text-info mb-0">{{ forecast.forecasted_demand }}</h4>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="bg-warning bg-opacity-10 p-3 rounded stat-box">
+                                        <p class="small text-muted mb-1">Reorder Point</p>
+                                        <h4 class="text-warning mb-0">{{ forecast.reorder_point }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-light mb-0">
+                                <p class="small fw-semibold mb-1">Recommendation:</p>
+                                <p class="small mb-0">
+                                    {% if forecast.current_stock < forecast.reorder_point %}
+                                        Order {{ forecast.forecasted_demand - forecast.current_stock }} units immediately to meet forecasted demand
+                                    {% else %}
+                                        Stock levels are optimal for current demand forecast
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    No forecast data available at this time.
+                </div>
+                {% endif %}
             </div>
         </div>
+        
         <div class="card bg-primary bg-opacity-10 border-primary">
             <div class="card-body">
                 <h5 class="mb-3">Key Insights</h5>
@@ -130,160 +204,5 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
-    <script>
-        let db;
-        let currentUser = null;
-
-        async function initDatabase() {
-            try {
-                const SQL = await initSqlJs({
-                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
-                });
-                
-                const savedDb = localStorage.getItem('supplyChainDb');
-                if (savedDb) {
-                    const buffer = Uint8Array.from(atob(savedDb), c => c.charCodeAt(0));
-                    db = new SQL.Database(buffer);
-                } else {
-                    db = new SQL.Database();
-                    await createTables();
-                    await insertSampleData();
-                    saveDatabase();
-                }
-                
-                loadForecasts();
-                checkAuth();
-            } catch (error) {
-                console.error('Database initialization error:', error);
-            }
-        }
-
-        function saveDatabase() {
-            if (db) {
-                const data = db.export();
-                const buffer = btoa(String.fromCharCode.apply(null, data));
-                localStorage.setItem('supplyChainDb', buffer);
-            }
-        }
-
-        async function createTables() {
-            db.run(`
-                CREATE TABLE IF NOT EXISTS forecasts (
-                    forecast_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    category TEXT,
-                    current_stock INTEGER,
-                    forecast INTEGER,
-                    status TEXT,
-                    reorder INTEGER
-                );
-            `);
-        }
-
-        async function insertSampleData() {
-            const forecasts = [
-                ['Electronics', 248, 320, 'low', 280],
-                ['Clothing', 180, 150, 'optimal', 120],
-                ['Books', 95, 110, 'low', 100],
-                ['Beauty', 210, 180, 'optimal', 150]
-            ];
-
-            forecasts.forEach(f => {
-                db.run('INSERT INTO forecasts (category, current_stock, forecast, status, reorder) VALUES (?, ?, ?, ?, ?)', f);
-            });
-        }
-
-        function loadForecasts() {
-            const result = db.exec('SELECT * FROM forecasts');
-            if (result.length > 0) {
-                const forecasts = result[0].values.map(row => ({
-                    category: row[1],
-                    current: row[2],
-                    forecast: row[3],
-                    status: row[4],
-                    reorder: row[5]
-                }));
-                displayForecasts(forecasts);
-            }
-        }
-
-        function displayForecasts(forecasts) {
-            const container = document.getElementById('forecastsContainer');
-            container.innerHTML = forecasts.map(item => `
-                <div class="card forecast-card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <h5 class="mb-1">${item.category}</h5>
-                                <p class="small fw-medium mb-0 ${item.status === 'optimal' ? 'text-success' : 'text-warning'}">
-                                    Status: ${item.status.toUpperCase()}
-                                </p>
-                            </div>
-                            ${item.current < item.reorder ? '<span class="badge bg-danger">Reorder Required</span>' : ''}
-                        </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-4">
-                                <div class="bg-primary bg-opacity-10 p-3 rounded">
-                                    <p class="small text-muted mb-1">Current Stock</p>
-                                    <h4 class="text-primary mb-0">${item.current}</h4>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="bg-info bg-opacity-10 p-3 rounded">
-                                    <p class="small text-muted mb-1">Forecasted Demand</p>
-                                    <h4 class="text-info mb-0">${item.forecast}</h4>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="bg-warning bg-opacity-10 p-3 rounded">
-                                    <p class="small text-muted mb-1">Reorder Point</p>
-                                    <h4 class="text-warning mb-0">${item.reorder}</h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="alert alert-light mb-0">
-                            <p class="small fw-semibold mb-1">Recommendation:</p>
-                            <p class="small mb-0">
-                                ${item.current < item.reorder 
-                                    ? `Order ${item.forecast - item.current} units immediately to meet forecasted demand`
-                                    : 'Stock levels are optimal for current demand forecast'}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function checkAuth() {
-            const user = localStorage.getItem('currentUser');
-            if (user) {
-                currentUser = JSON.parse(user);
-                updateAuthUI();
-            }
-        }
-
-        function updateAuthUI() {
-            const authButtons = document.getElementById('authButtons');
-            const userGreeting = document.getElementById('userGreeting');
-            const userName = document.getElementById('userName');
-
-            if (currentUser) {
-                authButtons.classList.add('hidden');
-                userGreeting.classList.remove('hidden');
-                userName.textContent = currentUser.name;
-            } else {
-                authButtons.classList.remove('hidden');
-                userGreeting.classList.add('hidden');
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('currentUser');
-            currentUser = null;
-            location.href = 'index.html';
-        }
-
-        window.addEventListener('DOMContentLoaded', initDatabase);
-    </script>
 </body>
 </html>
