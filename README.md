@@ -13,17 +13,18 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 - **Performance Metrics**: KPI dashboards for delivery times, accuracy, and customer satisfaction
 - **User Authentication**: Secure login and signup system with session management
 
-
 ---
 
-## Team Members
+## Team Members & Contributions
 
-| Name | Student Number | 
-|------|----------------|
-| D Tsebe | u22729951 |
-| M Thebe | u22754459 | 
-| P Mkhwanazi | u21518689| 
-| K Mokone | u23655144 |  
+| Name | Student Number | GitHub Username | Contributions |
+|------|----------------|-----------------|---------------|
+| D Tsebe | u22729951 | Dineo Tsebe | • Updated and linked the **Shop** and **Customer** HTML files to the backend Python files<br>• Integrated shop product catalog with database queries<br>• Implemented customer feedback submission functionality<br>• Updated the README.md file to include the team members and contributions table |
+| M Thebe | u22754459 | u22754459 | • Updated and linked the **Index** HTML file (home page) to the backend Python file<br>• Integrated KPI metrics display with Flask routes<br>• Updated the app.py file to correspond with all HTML templates<br>• Implemented dashboard statistics and real-time data binding |
+| P Mkhwanazi | u21518689 | Phumi-km | • Updated and linked the **Forecast** and **Tracking** HTML files to the backend Python files<br>• Integrated demand forecasting data with database views<br>• Implemented order tracking with progress indicators and status updates<br>• Connected real-time order location and ETA functionality |
+| K Mokone | u23655144 | Katlego23-stack | • Updated and linked the **Login** and **Signup** HTML files to the backend Python file<br>• Implemented user authentication and session management<br>• Created user registration with password validation<br>• Integrated Flask session handling for secure login/logout |
+
+**Note**: All team members contributed collectively to updating the app.py file to ensure proper correspondence and integration with all HTML templates, database connections, and route handling.
 
 **Course**: BFB 321 Project  
 **Institution**: University of Pretoria  
@@ -44,10 +45,10 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 - **CSS3**: Custom styling with Bootstrap integration
 - **Bootstrap 5.3.2**: Responsive UI framework
 - **Bootstrap Icons 1.11.1**: Icon library
+- **JavaScript**: Client-side interactivity (via Bootstrap bundle)
 
 ### Database
 - **SQLite**: Lightweight, file-based database
-- **SQL.js**: Client-side SQLite support
 - **Indexes**: Optimized queries for performance
 - **Views**: Pre-built analytics and reporting queries
 
@@ -103,17 +104,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
    - Open your browser and navigate to `http://localhost:5000`
    - The home page will display with KPI metrics
    - Navigate through different sections using the navigation bar
-
-### Default User Accounts
-
-The system comes pre-populated with sample user accounts:
-
-| Email | Password | Type |
-|-------|----------|------|
-| admin@supplychain.com | admin123 | Admin |
-| vendor@supplychain.com | vendor123 | Vendor |
-| katlego.mokone@example.com | password123 | Customer |
-
+---
 ### Browser Compatibility
 - Chrome 90+
 - Firefox 88+
@@ -167,109 +158,6 @@ The system comes pre-populated with sample user accounts:
 - Session management with Flask sessions
 
 ---
-
-## API Endpoints
-
-### Products API
-
-#### Get All Products
-```http
-GET /api/products
-```
-Returns all products with category information.
-
-#### Get Single Product
-```http
-GET /api/products/<product_id>
-```
-Returns details for a specific product.
-
-#### Create Product
-```http
-POST /api/products
-Content-Type: application/json
-
-{
-  "sku": "PROD-001",
-  "product_name": "Product Name",
-  "category_id": 1,
-  "quantity": 100,
-  "price": 99.99,
-  "description": "Product description",
-  "supplier": "Supplier Name",
-  "min_stock_level": 10,
-  "max_stock_level": 500
-}
-```
-
-### Orders API
-
-#### Get All Orders
-```http
-GET /api/orders
-```
-Returns all orders sorted by creation date.
-
-#### Get Single Order
-```http
-GET /api/orders/<order_id>
-```
-Returns details for a specific order.
-
-#### Create Order
-```http
-POST /api/orders
-Content-Type: application/json
-
-{
-  "customer_name": "John Doe",
-  "customer_email": "john@example.com",
-  "product_name": "Samsung Galaxy S23",
-  "product_id": 1,
-  "quantity": 1,
-  "total_amount": 899.99
-}
-```
-
-#### Update Order Status
-```http
-PUT /api/orders/<order_id>/status
-Content-Type: application/json
-
-{
-  "status": "in-transit",
-  "location": "Johannesburg Hub",
-  "progress": 65
-}
-```
-
-### Feedback API
-
-#### Submit Feedback
-```http
-POST /api/feedback
-Content-Type: application/json
-
-{
-  "customer_name": "John Doe",
-  "customer_email": "john@example.com",
-  "order_number": "ORD-001",
-  "rating": 5,
-  "delivery_rating": 5,
-  "product_rating": 5,
-  "comment": "Excellent service!",
-  "order_status": "delivered"
-}
-```
-
-### Dashboard API
-
-#### Get Dashboard Metrics
-```http
-GET /api/dashboard/metrics
-```
-Returns all KPI metrics for the dashboard.
-
 ---
 
 ## Database Schema
@@ -329,12 +217,7 @@ Returns all KPI metrics for the dashboard.
 **Foreign Key**: `ORDERS.customer` references `USERS.name`  
 **Cardinality**: 1:N
 
-```sql
--- A user can have multiple orders
-SELECT u.name, COUNT(o.order_id) as total_orders
-FROM users u
-LEFT JOIN orders o ON u.name = o.customer
-GROUP BY u.name;
+
 ```
 
 **Business Rules**:
@@ -351,13 +234,7 @@ GROUP BY u.name;
 **Foreign Key**: `ORDERS.product` references `PRODUCTS.name`  
 **Cardinality**: 1:N
 
-```sql
--- Track which products are most ordered
-SELECT p.name, p.category, COUNT(o.order_id) as times_ordered
-FROM products p
-LEFT JOIN orders o ON p.name = o.product
-GROUP BY p.name, p.category
-ORDER BY times_ordered DESC;
+
 ```
 
 **Business Rules**:
@@ -375,12 +252,7 @@ ORDER BY times_ordered DESC;
 **Foreign Key**: `FEEDBACK.order_num` references `ORDERS.order_number`  
 **Cardinality**: 1:1
 
-```sql
--- Get orders with their feedback
-SELECT o.order_number, o.product, o.status,
-       f.rating, f.delivery_rating, f.product_rating, f.comment
-FROM orders o
-LEFT JOIN feedback f ON o.order_number = f.order_num;
+
 ```
 
 **Business Rules**:
@@ -398,12 +270,7 @@ LEFT JOIN feedback f ON o.order_number = f.order_num;
 **Foreign Key**: `FEEDBACK.customer` references `USERS.name`  
 **Cardinality**: 1:N
 
-```sql
--- Get all feedback from a specific user
-SELECT f.order_num, f.rating, f.comment, f.date
-FROM feedback f
-JOIN users u ON f.customer = u.name
-WHERE u.name = 'Alulutho Majova';
+
 ```
 
 **Business Rules**:
@@ -420,16 +287,7 @@ WHERE u.name = 'Alulutho Majova';
 **Foreign Key**: `FORECASTS.category` references `PRODUCTS.category`  
 **Cardinality**: N:1
 
-```sql
--- Compare product inventory to forecast recommendations
-SELECT p.category, 
-       SUM(p.stock) as total_stock,
-       f.forecast as predicted_demand,
-       f.reorder as reorder_point,
-       f.status
-FROM products p
-JOIN forecasts f ON p.category = f.category
-GROUP BY p.category, f.forecast, f.reorder, f.status;
+
 ```
 
 **Business Rules**:
@@ -451,212 +309,8 @@ GROUP BY p.category, f.forecast, f.reorder, f.status;
 | USERS → FEEDBACK | 1:N | customer | CASCADE | Users submit feedback |
 | PRODUCTS → FORECASTS | N:1 | category | CASCADE | Products grouped for forecasting |
 
-### Referential Integrity Constraints
-
-```sql
--- Add foreign key constraints (if using full SQL database)
-
--- Orders references Users
-ALTER TABLE orders 
-ADD CONSTRAINT fk_orders_customer 
-FOREIGN KEY (customer) REFERENCES users(name)
-ON DELETE CASCADE;
-
--- Orders references Products
-ALTER TABLE orders 
-ADD CONSTRAINT fk_orders_product 
-FOREIGN KEY (product) REFERENCES products(name)
-ON DELETE RESTRICT;
-
--- Feedback references Orders
-ALTER TABLE feedback 
-ADD CONSTRAINT fk_feedback_order 
-FOREIGN KEY (order_num) REFERENCES orders(order_number)
-ON DELETE CASCADE;
-
--- Feedback references Users
-ALTER TABLE feedback 
-ADD CONSTRAINT fk_feedback_customer 
-FOREIGN KEY (customer) REFERENCES users(name)
-ON DELETE CASCADE;
-
--- Forecasts references Products (category level)
-ALTER TABLE forecasts 
-ADD CONSTRAINT fk_forecasts_category 
-FOREIGN KEY (category) REFERENCES products(category)
-ON DELETE CASCADE;
 ```
 
-### Data Flow Diagram
-
-```
-┌──────────┐
-│  User    │
-│ (Login)  │
-└────┬─────┘
-     │
-     ▼
-┌─────────────┐     ┌──────────────┐
-│   Browse    │────►│   Products   │
-│  Products   │     │   (Catalog)  │
-└─────┬───────┘     └──────┬───────┘
-      │                     │
-      ▼                     │
-┌─────────────┐            │
-│  Add to     │◄───────────┘
-│    Cart     │
-└─────┬───────┘
-      │
-      ▼
-┌─────────────┐     ┌──────────────┐
-│   Place     │────►│    Orders    │
-│   Order     │     │  (Created)   │
-└─────────────┘     └──────┬───────┘
-                           │
-                           ▼
-                    ┌──────────────┐
-                    │   Tracking   │
-                    │   (Status)   │
-                    └──────┬───────┘
-                           │
-                           ▼
-                    ┌──────────────┐     ┌──────────────┐
-                    │  Delivered   │────►│   Feedback   │
-                    │   (Complete) │     │  (Submit)    │
-                    └──────────────┘     └──────────────┘
-```
-
-### Core Tables
-
-#### 1. product_categories
-```sql
-CREATE TABLE product_categories (
-    category_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    category_name TEXT NOT NULL UNIQUE,
-    category_description TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-#### 2. users
-```sql
-CREATE TABLE users (
-    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE,
-    phone TEXT,
-    address TEXT,
-    password TEXT NOT NULL,
-    user_type TEXT NOT NULL CHECK (user_type IN ('customer', 'vendor', 'admin')) DEFAULT 'customer',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-#### 3. products
-```sql
-CREATE TABLE products (
-    product_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    sku TEXT UNIQUE NOT NULL,
-    product_name TEXT NOT NULL,
-    category_id INTEGER,
-    quantity INTEGER NOT NULL DEFAULT 0,
-    price REAL NOT NULL CHECK (price >= 0),
-    emoji TEXT,
-    description TEXT,
-    supplier TEXT,
-    min_stock_level INTEGER DEFAULT 10,
-    max_stock_level INTEGER DEFAULT 100,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES product_categories(category_id)
-);
-```
-
-#### 4. orders
-```sql
-CREATE TABLE orders (
-    order_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    order_number TEXT UNIQUE NOT NULL,
-    customer_name TEXT NOT NULL,
-    customer_email TEXT,
-    product_name TEXT NOT NULL,
-    product_id INTEGER,
-    quantity INTEGER NOT NULL DEFAULT 1,
-    total_amount REAL NOT NULL DEFAULT 0,
-    status TEXT NOT NULL CHECK(status IN ('processing', 'in-transit', 'delivered', 'delayed', 'cancelled')) DEFAULT 'processing',
-    eta TEXT,
-    location TEXT,
-    progress INTEGER DEFAULT 0 CHECK(progress >= 0 AND progress <= 100),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (product_id) REFERENCES products(product_id)
-);
-```
-
-#### 5. forecasts
-```sql
-CREATE TABLE forecasts (
-    forecast_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    category_id INTEGER NOT NULL,
-    category_name TEXT NOT NULL,
-    current_stock INTEGER NOT NULL,
-    forecast_demand INTEGER NOT NULL,
-    status TEXT NOT NULL CHECK(status IN ('low', 'optimal', 'high')) DEFAULT 'optimal',
-    reorder_point INTEGER NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES product_categories(category_id)
-);
-```
-
-#### 6. feedback
-```sql
-CREATE TABLE feedback (
-    feedback_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    customer_name TEXT NOT NULL,
-    customer_email TEXT,
-    order_number TEXT NOT NULL,
-    rating INTEGER NOT NULL CHECK(rating >= 1 AND rating <= 5),
-    delivery_rating INTEGER NOT NULL CHECK(delivery_rating >= 1 AND delivery_rating <= 5),
-    product_rating INTEGER NOT NULL CHECK(product_rating >= 1 AND product_rating <= 5),
-    comment TEXT NOT NULL,
-    feedback_date TEXT NOT NULL,
-    order_status TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (order_number) REFERENCES orders(order_number)
-);
-```
-
-#### 7. stock_updates
-```sql
-CREATE TABLE stock_updates (
-    update_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    product_id INTEGER NOT NULL,
-    user_id INTEGER,
-    update_type TEXT NOT NULL CHECK (update_type IN ('add', 'remove', 'set', 'adjustment')),
-    quantity_change INTEGER NOT NULL,
-    old_quantity INTEGER NOT NULL,
-    new_quantity INTEGER NOT NULL,
-    reason TEXT NOT NULL CHECK (reason IN ('restock', 'sale', 'damage', 'return', 'adjustment', 'order', 'other')),
-    notes TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (product_id) REFERENCES products(product_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
-```
-
-### Database Views
-
-The system includes pre-built views for analytics:
-
-1. **order_statistics**: Order counts and revenue by status
-2. **inventory_summary**: Product inventory by category
-3. **satisfaction_metrics**: Customer satisfaction aggregates
-4. **low_stock_alert**: Products requiring reorder
-5. **sales_performance**: Sales data by product
-6. **stock_movement_history**: Complete stock change audit trail
 
 ---
 
@@ -697,9 +351,6 @@ The system includes pre-built views for analytics:
 2. **Database Access**: Query SQLite database directly for custom reports
 3. **Extend Functionality**: Add new routes and templates as needed
 4. **Custom Analytics**: Create new database views for specific metrics
-
----
-
 
 ---
 
