@@ -3,21 +3,16 @@
 
 ## Project Description
 
-SupplyChain Master is a comprehensive supply chain management platform designed to optimize logistics operations and enhance customer satisfaction. The system addresses critical supply chain challenges by providing real-time order tracking, demand forecasting, and customer feedback management.
+SupplyChain Master is a comprehensive supply chain management platform designed to optimize logistics operations and enhance customer satisfaction. The system addresses critical supply chain inefficiencies by providing real-time order tracking, demand forecasting, and customer feedback management.
 
 ### Key Features
-- **Real-Time Order Tracking**: Live GPS updates and progress monitoring for all orders
+- **Real-Time Order Tracking**: Live status updates and progress monitoring for all orders
 - **Demand Forecasting**: AI-powered inventory predictions to optimize stock levels
 - **Customer Portal**: Feedback submission and satisfaction tracking
 - **E-commerce Shop**: Product catalog with shopping cart functionality
 - **Performance Metrics**: KPI dashboards for delivery times, accuracy, and customer satisfaction
+- **User Authentication**: Secure login and signup system with session management
 
-### Project Goals
-- Reduce delivery delays by 40%
-- Decrease wrong orders by 70%
-- Improve customer satisfaction to 4.8/5.0
-- Achieve 95% on-time delivery rate
-- Maintain order accuracy above 95%
 
 ---
 
@@ -38,65 +33,242 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 
 ## Technology Stack
 
-- **Frontend**: HTML5, CSS3, Bootstrap 5.3.2
-- **JavaScript**: Vanilla JS (ES6+)
-- **Database**: SQL.js (Client-side SQLite)
-- **Icons**: Bootstrap Icons 1.11.1
-- **Storage**: LocalStorage for session and data persistence
+### Backend
+- **Framework**: Flask (Python web framework)
+- **Database**: SQLite with Row factory for dict-like access
+- **Session Management**: Flask sessions with secret key
+- **API**: RESTful API endpoints
+
+### Frontend
+- **HTML5**: Semantic markup
+- **CSS3**: Custom styling with Bootstrap integration
+- **Bootstrap 5.3.2**: Responsive UI framework
+- **Bootstrap Icons 1.11.1**: Icon library
+
+### Database
+- **SQLite**: Lightweight, file-based database
+- **SQL.js**: Client-side SQLite support
+- **Indexes**: Optimized queries for performance
+- **Views**: Pre-built analytics and reporting queries
 
 ---
 
 ## Installation & Setup Instructions
 
 ### Prerequisites
+- Python 3.8 or higher
+- pip (Python package installer)
 - Modern web browser (Chrome, Firefox, Safari, or Edge)
-- No server installation required (runs entirely in browser)
 
 ### Setup Steps
 
-1. **Download the Project Files**
+1. **Clone the Repository**
    ```bash
-   # Clone or download the repository
    git clone [repository-url]
    cd supplychain-master
    ```
 
-2. **File Structure**
-   Ensure all files are in the same directory:
+2. **Install Python Dependencies**
+   ```bash
+   pip install flask
+   ```
+
+3. **Project Structure**
    ```
    supplychain-master/
-   ├── index.html
-   ├── shop.html
-   ├── tracking.html
-   ├── forecast.html
-   ├── customer.html
-   ├── login.html 
-   ├── signup.html 
+   ├── app.py                  # Flask application
+   ├── inventory.sql           # Database schema
+   ├── inventory.db            # SQLite database (auto-created)
+   ├── templates/              # HTML templates
+   │   ├── index.html
+   │   ├── shop.html
+   │   ├── tracking.html
+   │   ├── forecast.html
+   │   ├── customer.html
+   │   ├── login.html
+   │   └── signup.html
    └── README.md
    ```
 
-3. **Launch the Application**
-   - Simply open `index.html` in your web browser
-   - Or use a local development server:
-     ```bash
-     # Using Python 3
-     python -m http.server 8000
-     
-     # Using Node.js
-     npx http-server
-     ```
-   - Navigate to `http://localhost:8000`
+4. **Initialize the Database**
+   The database is automatically initialized when you first run the application. The `init_db()` function creates the database from `inventory.sql` if it doesn't exist.
 
-4. **Initial Data**
-   - The application automatically creates sample data on first load
-   - Sample orders, products, and feedback are pre-populated
-   - Data persists in browser's LocalStorage
+5. **Run the Application**
+   ```bash
+   python app.py
+   ```
+   The application will start on `http://localhost:5000`
+
+6. **Access the Application**
+   - Open your browser and navigate to `http://localhost:5000`
+   - The home page will display with KPI metrics
+   - Navigate through different sections using the navigation bar
+
+### Default User Accounts
+
+The system comes pre-populated with sample user accounts:
+
+| Email | Password | Type |
+|-------|----------|------|
+| admin@supplychain.com | admin123 | Admin |
+| vendor@supplychain.com | vendor123 | Vendor |
+| katlego.mokone@example.com | password123 | Customer |
 
 ### Browser Compatibility
 - Chrome 90+
 - Firefox 88+
 - Safari 14+
 - Edge 90+
+
+---
+
+## Application Features
+
+### 1. Home Dashboard (`/`)
+- Real-time KPI metrics display
+- Total orders, products, and stock levels
+- Low stock alerts
+- Inventory value calculation
+- Average customer rating
+
+### 2. Shop (`/shop`)
+- Product catalog with categories
+- Filter by category (Electronics, Clothing, Books, Beauty, Sports, Home)
+- Stock availability display
+- Add to cart functionality
+- Product details with SKU, price, and descriptions
+
+### 3. Order Tracking (`/tracking`)
+- Real-time order status updates
+- Progress bar visualization (0-100%)
+- Location tracking
+- Estimated delivery dates (ETA)
+- Order status categories: processing, in-transit, delivered, delayed, cancelled
+- Performance metrics: on-time delivery rate, average delivery time
+
+### 4. Demand Forecasting (`/forecast`)
+- Category-based inventory predictions
+- Current stock vs. forecasted demand
+- Reorder point recommendations
+- Status indicators: low, optimal, high
+- Automated restocking suggestions
+
+### 5. Customer Portal (`/customer`)
+- Submit feedback for orders
+- View recent customer reviews
+- Multi-dimensional ratings (overall, delivery, product)
+- Performance improvement tracking
+- Contact support information
+
+### 6. Authentication
+- **Login** (`/login`): User authentication with email and password
+- **Signup** (`/signup`): New user registration
+- **Logout** (`/logout`): Session termination
+- Session management with Flask sessions
+
+---
+
+## API Endpoints
+
+### Products API
+
+#### Get All Products
+```http
+GET /api/products
+```
+Returns all products with category information.
+
+#### Get Single Product
+```http
+GET /api/products/<product_id>
+```
+Returns details for a specific product.
+
+#### Create Product
+```http
+POST /api/products
+Content-Type: application/json
+
+{
+  "sku": "PROD-001",
+  "product_name": "Product Name",
+  "category_id": 1,
+  "quantity": 100,
+  "price": 99.99,
+  "description": "Product description",
+  "supplier": "Supplier Name",
+  "min_stock_level": 10,
+  "max_stock_level": 500
+}
+```
+
+### Orders API
+
+#### Get All Orders
+```http
+GET /api/orders
+```
+Returns all orders sorted by creation date.
+
+#### Get Single Order
+```http
+GET /api/orders/<order_id>
+```
+Returns details for a specific order.
+
+#### Create Order
+```http
+POST /api/orders
+Content-Type: application/json
+
+{
+  "customer_name": "John Doe",
+  "customer_email": "john@example.com",
+  "product_name": "Samsung Galaxy S23",
+  "product_id": 1,
+  "quantity": 1,
+  "total_amount": 899.99
+}
+```
+
+#### Update Order Status
+```http
+PUT /api/orders/<order_id>/status
+Content-Type: application/json
+
+{
+  "status": "in-transit",
+  "location": "Johannesburg Hub",
+  "progress": 65
+}
+```
+
+### Feedback API
+
+#### Submit Feedback
+```http
+POST /api/feedback
+Content-Type: application/json
+
+{
+  "customer_name": "John Doe",
+  "customer_email": "john@example.com",
+  "order_number": "ORD-001",
+  "rating": 5,
+  "delivery_rating": 5,
+  "product_rating": 5,
+  "comment": "Excellent service!",
+  "order_status": "delivered"
+}
+```
+
+### Dashboard API
+
+#### Get Dashboard Metrics
+```http
+GET /api/dashboard/metrics
+```
+Returns all KPI metrics for the dashboard.
 
 ---
 
@@ -354,144 +526,137 @@ ON DELETE CASCADE;
                     └──────────────┘     └──────────────┘
 ```
 
-### Table Definitions
+### Core Tables
 
-#### 1. USERS Table
+#### 1. product_categories
 ```sql
-CREATE TABLE users (
-    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE product_categories (
+    category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category_name TEXT NOT NULL UNIQUE,
+    category_description TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| user_id | INTEGER | PRIMARY KEY | Unique user identifier |
-| name | TEXT | NOT NULL | User's full name |
-| email | TEXT | UNIQUE, NOT NULL | User's email address |
-| password | TEXT | NOT NULL | Hashed password |
-| created_at | TEXT | DEFAULT NOW | Account creation date |
+#### 2. users
+```sql
+CREATE TABLE users (
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    phone TEXT,
+    address TEXT,
+    password TEXT NOT NULL,
+    user_type TEXT NOT NULL CHECK (user_type IN ('customer', 'vendor', 'admin')) DEFAULT 'customer',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
 
-#### 2. PRODUCTS Table
+#### 3. products
 ```sql
 CREATE TABLE products (
     product_id INTEGER PRIMARY KEY AUTOINCREMENT,
     sku TEXT UNIQUE NOT NULL,
-    name TEXT NOT NULL,
-    category TEXT NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    stock INTEGER DEFAULT 0,
+    product_name TEXT NOT NULL,
+    category_id INTEGER,
+    quantity INTEGER NOT NULL DEFAULT 0,
+    price REAL NOT NULL CHECK (price >= 0),
+    emoji TEXT,
     description TEXT,
-    emoji TEXT
+    supplier TEXT,
+    min_stock_level INTEGER DEFAULT 10,
+    max_stock_level INTEGER DEFAULT 100,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES product_categories(category_id)
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| product_id | INTEGER | PRIMARY KEY | Unique product identifier |
-| sku | TEXT | UNIQUE, NOT NULL | Stock keeping unit code |
-| name | TEXT | NOT NULL | Product name |
-| category | TEXT | NOT NULL | Product category |
-| price | DECIMAL | NOT NULL | Product price |
-| stock | INTEGER | DEFAULT 0 | Available quantity |
-| description | TEXT | | Product description |
-| emoji | TEXT | | Display emoji |
-
-**Sample Data:**
-- Electronics: Samsung Galaxy S23, iPhone 14 Pro, AirPods Pro
-- Clothing: Nike Air Max
-- Books: JavaScript Guide
-- Beauty: Moisturizing Cream
-- Sports: Yoga Mat
-- Home: Coffee Maker
-
-#### 3. ORDERS Table
+#### 4. orders
 ```sql
 CREATE TABLE orders (
     order_id INTEGER PRIMARY KEY AUTOINCREMENT,
     order_number TEXT UNIQUE NOT NULL,
-    customer TEXT NOT NULL,
-    product TEXT NOT NULL,
-    status TEXT CHECK(status IN ('processing', 'in-transit', 'delivered', 'delayed', 'cancelled')),
+    customer_name TEXT NOT NULL,
+    customer_email TEXT,
+    product_name TEXT NOT NULL,
+    product_id INTEGER,
+    quantity INTEGER NOT NULL DEFAULT 1,
+    total_amount REAL NOT NULL DEFAULT 0,
+    status TEXT NOT NULL CHECK(status IN ('processing', 'in-transit', 'delivered', 'delayed', 'cancelled')) DEFAULT 'processing',
     eta TEXT,
     location TEXT,
-    progress INTEGER DEFAULT 0
+    progress INTEGER DEFAULT 0 CHECK(progress >= 0 AND progress <= 100),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| order_id | INTEGER | PRIMARY KEY | Unique order identifier |
-| order_number | TEXT | UNIQUE, NOT NULL | Order reference number |
-| customer | TEXT | NOT NULL | Customer name |
-| product | TEXT | NOT NULL | Ordered product |
-| status | TEXT | CHECK constraint | Order status |
-| eta | TEXT | | Estimated delivery date |
-| location | TEXT | | Current location |
-| progress | INTEGER | DEFAULT 0 | Completion percentage (0-100) |
-
-**Status Values:**
-- `processing`: Order being prepared
-- `in-transit`: Out for delivery
-- `delivered`: Successfully delivered
-- `delayed`: Behind schedule
-- `cancelled`: Order cancelled
-
-#### 4. FEEDBACK Table
-```sql
-CREATE TABLE feedback (
-    feedback_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    customer TEXT NOT NULL,
-    order_num TEXT NOT NULL,
-    rating INTEGER CHECK(rating BETWEEN 1 AND 5),
-    delivery_rating INTEGER CHECK(delivery_rating BETWEEN 1 AND 5),
-    product_rating INTEGER CHECK(product_rating BETWEEN 1 AND 5),
-    comment TEXT NOT NULL,
-    date TEXT DEFAULT CURRENT_DATE,
-    status TEXT CHECK(status IN ('pending', 'delivered', 'returned'))
-);
-```
-
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| feedback_id | INTEGER | PRIMARY KEY | Unique feedback identifier |
-| customer | TEXT | NOT NULL | Customer name |
-| order_num | TEXT | NOT NULL | Related order number |
-| rating | INTEGER | 1-5 | Overall rating |
-| delivery_rating | INTEGER | 1-5 | Delivery experience rating |
-| product_rating | INTEGER | 1-5 | Product quality rating |
-| comment | TEXT | NOT NULL | Customer feedback text |
-| date | TEXT | DEFAULT NOW | Feedback submission date |
-| status | TEXT | CHECK constraint | Order status at feedback time |
-
-#### 5. FORECASTS Table
+#### 5. forecasts
 ```sql
 CREATE TABLE forecasts (
     forecast_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    category TEXT NOT NULL,
+    category_id INTEGER NOT NULL,
+    category_name TEXT NOT NULL,
     current_stock INTEGER NOT NULL,
-    forecast INTEGER NOT NULL,
-    status TEXT CHECK(status IN ('low', 'optimal', 'high')),
-    reorder INTEGER NOT NULL
+    forecast_demand INTEGER NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('low', 'optimal', 'high')) DEFAULT 'optimal',
+    reorder_point INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES product_categories(category_id)
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| forecast_id | INTEGER | PRIMARY KEY | Unique forecast identifier |
-| category | TEXT | NOT NULL | Product category |
-| current_stock | INTEGER | NOT NULL | Current inventory level |
-| forecast | INTEGER | NOT NULL | Predicted demand (30 days) |
-| status | TEXT | CHECK constraint | Inventory status |
-| reorder | INTEGER | NOT NULL | Reorder point threshold |
+#### 6. feedback
+```sql
+CREATE TABLE feedback (
+    feedback_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_name TEXT NOT NULL,
+    customer_email TEXT,
+    order_number TEXT NOT NULL,
+    rating INTEGER NOT NULL CHECK(rating >= 1 AND rating <= 5),
+    delivery_rating INTEGER NOT NULL CHECK(delivery_rating >= 1 AND delivery_rating <= 5),
+    product_rating INTEGER NOT NULL CHECK(product_rating >= 1 AND product_rating <= 5),
+    comment TEXT NOT NULL,
+    feedback_date TEXT NOT NULL,
+    order_status TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_number) REFERENCES orders(order_number)
+);
+```
 
-**Status Logic:**
-- `low`: current_stock < reorder
-- `optimal`: current_stock ≥ reorder AND < forecast * 1.2
-- `high`: current_stock ≥ forecast * 1.2
+#### 7. stock_updates
+```sql
+CREATE TABLE stock_updates (
+    update_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id INTEGER NOT NULL,
+    user_id INTEGER,
+    update_type TEXT NOT NULL CHECK (update_type IN ('add', 'remove', 'set', 'adjustment')),
+    quantity_change INTEGER NOT NULL,
+    old_quantity INTEGER NOT NULL,
+    new_quantity INTEGER NOT NULL,
+    reason TEXT NOT NULL CHECK (reason IN ('restock', 'sale', 'damage', 'return', 'adjustment', 'order', 'other')),
+    notes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(product_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+```
+
+### Database Views
+
+The system includes pre-built views for analytics:
+
+1. **order_statistics**: Order counts and revenue by status
+2. **inventory_summary**: Product inventory by category
+3. **satisfaction_metrics**: Customer satisfaction aggregates
+4. **low_stock_alert**: Products requiring reorder
+5. **sales_performance**: Sales data by product
+6. **stock_movement_history**: Complete stock change audit trail
 
 ---
 
@@ -511,18 +676,31 @@ CREATE TABLE forecasts (
 ## Usage Guide
 
 ### For Customers
-1. **Browse Products**: Navigate to Shop page to view available products
-2. **Add to Cart**: Select products and add them to shopping cart
-3. **Track Orders**: Use Order Tracking page to monitor delivery status
-4. **Submit Feedback**: Provide ratings and comments via Customer Portal
+1. **Create Account**: Register via signup page with email and password
+2. **Browse Products**: Navigate to Shop page to view available products
+3. **Filter by Category**: Use category buttons to filter products
+4. **Add to Cart**: Select products and add them to shopping cart
+5. **Place Orders**: Complete checkout process
+6. **Track Orders**: Use Order Tracking page to monitor delivery status in real-time
+7. **Submit Feedback**: Provide ratings and comments via Customer Portal after delivery
 
 ### For Administrators
-1. **Monitor KPIs**: View real-time metrics on Tracking page
-2. **Manage Inventory**: Check Forecast page for stock recommendations
-3. **Review Feedback**: Access Customer Portal to read customer reviews
-4. **Analyze Performance**: Track improvements in delivery times and accuracy
+1. **Login**: Use admin credentials to access admin features
+2. **Monitor KPIs**: View real-time metrics on dashboard and tracking pages
+3. **Manage Inventory**: Check Forecast page for stock recommendations
+4. **Review Feedback**: Access Customer Portal to read customer reviews
+5. **Analyze Performance**: Track improvements in delivery times and accuracy
+6. **Use API**: Access RESTful API for programmatic integration
+
+### For Developers
+1. **API Integration**: Use provided API endpoints for custom integrations
+2. **Database Access**: Query SQLite database directly for custom reports
+3. **Extend Functionality**: Add new routes and templates as needed
+4. **Custom Analytics**: Create new database views for specific metrics
 
 ---
+
+
 ---
 
 ## Contact Information
@@ -539,3 +717,10 @@ CREATE TABLE forecasts (
 All rights reserved.
 
 ---
+
+
+
+
+
+
+
