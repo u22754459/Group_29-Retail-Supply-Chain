@@ -6,9 +6,70 @@
     <title>Order Tracking - Supply Chain Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tracking.css') }}">
+    <style>
+        body {
+            background-color: #f9fafb;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card {
+            border-left: 4px solid;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-card {
+            transition: box-shadow 0.2s, transform 0.2s;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .progress-bar {
+            transition: width 1s ease-in-out;
+            animation: progressSlide 1.5s ease-out;
+        }
+
+        @keyframes progressSlide {
+            from { width: 0%; }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .footer {
+            background-color: #1f2937;
+            color: white;
+        }
+
+        .order-card:nth-child(1) { animation-delay: 0.1s; }
+        .order-card:nth-child(2) { animation-delay: 0.2s; }
+        .order-card:nth-child(3) { animation-delay: 0.3s; }
+        .order-card:nth-child(4) { animation-delay: 0.4s; }
+        .order-card:nth-child(5) { animation-delay: 0.5s; }
+    </style>
 </head>
 <body>
+    <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
@@ -27,18 +88,12 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('customer') }}">Customer Portal</a></li>
                 </ul>
                 <div class="d-flex align-items-center gap-3">
-                    <a href="{{ url_for('shop') }}" class="btn btn-link position-relative">
+                    <a href="{{ url_for('shop') }}" class="btn btn-link">
                         <i class="bi bi-cart3 fs-5 text-secondary"></i>
                     </a>
-                    {% if session.user_id %}
-                        <div class="dropdown">
-                            <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle me-1"></i>{{ session.user_name }}
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
-                            </ul>
-                        </div>
+                    {% if session.get('user_id') %}
+                        <span class="text-muted">Hi, {{ session.get('user_name') }}</span>
+                        <a href="{{ url_for('logout') }}" class="btn btn-outline-secondary btn-sm">Logout</a>
                     {% else %}
                         <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">Login</a>
                         <a href="{{ url_for('signup') }}" class="btn btn-success btn-sm">Sign Up</a>
@@ -48,23 +103,27 @@
         </div>
     </nav>
 
-    <div class="container py-4">
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mt-3">
                 {% for category, message in messages %}
                     <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 {% endfor %}
-            {% endif %}
-        {% endwith %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
+    <!-- Main Content -->
+    <div class="container py-4">
         <h1 class="mb-4">Supply Chain Order Tracking</h1>
         
-        <!-- KPI Metrics -->
+        <!-- KPI Metrics Row -->
         <div class="row g-3 mb-4">
+            <!-- Total Orders Card -->
             <div class="col-md">
                 <div class="card stat-card border-start border-primary border-4">
                     <div class="card-body">
@@ -78,6 +137,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- On-Time Delivery Card -->
             <div class="col-md">
                 <div class="card stat-card border-start border-success border-4">
                     <div class="card-body">
@@ -91,6 +152,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Average Delivery Time Card -->
             <div class="col-md">
                 <div class="card stat-card border-start border-info border-4">
                     <div class="card-body">
@@ -104,6 +167,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Return Rate Card -->
             <div class="col-md">
                 <div class="card stat-card border-start border-warning border-4">
                     <div class="card-body">
@@ -117,6 +182,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Satisfaction Card -->
             <div class="col-md">
                 <div class="card stat-card border-start border-warning border-4">
                     <div class="card-body">
@@ -132,62 +199,75 @@
             </div>
         </div>
 
-        <!-- Orders List -->
+        <!-- Orders List Section -->
         <div class="card shadow-sm">
             <div class="card-body">
                 <h5 class="card-title mb-4">
                     <i class="bi bi-cart me-2"></i>
                     Recent Orders & Live Tracking
                 </h5>
+                
+                {% if orders %}
                 <div class="vstack gap-3">
                     {% for order in orders %}
-                        <div class="card order-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <div>
-                                        <h6 class="mb-1">{{ order.order_number }}</h6>
-                                        <p class="small text-muted mb-0">{{ order.customer_name }}</p>
-                                        <p class="small text-secondary">{{ order.product_name }}</p>
-                                    </div>
-                                    <span class="badge 
-                                        {% if order.status == 'delivered' %}bg-success
-                                        {% elif order.status == 'in-transit' %}bg-info
-                                        {% elif order.status == 'processing' %}bg-warning
-                                        {% elif order.status == 'delayed' %}bg-danger
-                                        {% else %}bg-secondary
-                                        {% endif %}">
-                                        {{ order.status.upper() }}
-                                    </span>
+                    <div class="card order-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h6 class="mb-1">{{ order.order_number }}</h6>
+                                    <p class="small text-muted mb-0">{{ order.customer_name }}</p>
+                                    <p class="small text-secondary">{{ order.product_name }}</p>
                                 </div>
-                                <div class="mb-2">
-                                    <div class="d-flex justify-content-between small mb-1">
-                                        <span class="text-muted">Progress</span>
-                                        <span class="fw-medium">{{ order.progress }}%</span>
-                                    </div>
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar 
-                                            {% if order.status == 'delivered' %}bg-success
-                                            {% elif order.status == 'in-transit' %}bg-info
-                                            {% elif order.status == 'processing' %}bg-warning
-                                            {% elif order.status == 'delayed' %}bg-danger
-                                            {% else %}bg-secondary
-                                            {% endif %}" 
-                                            style="width: {{ order.progress }}%;">
-                                        </div>
-                                    </div>
+                                {% if order.status == 'processing' %}
+                                    <span class="badge bg-warning text-dark">PROCESSING</span>
+                                {% elif order.status == 'in-transit' %}
+                                    <span class="badge bg-info">IN-TRANSIT</span>
+                                {% elif order.status == 'delivered' %}
+                                    <span class="badge bg-success">DELIVERED</span>
+                                {% elif order.status == 'delayed' %}
+                                    <span class="badge bg-danger">DELAYED</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ order.status|upper }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span class="text-muted">Progress</span>
+                                    <span class="fw-medium">{{ order.progress }}%</span>
                                 </div>
-                                <div class="d-flex justify-content-between small text-muted">
-                                    <span><i class="bi bi-geo-alt me-1"></i>{{ order.location }}</span>
-                                    <span>ETA: {{ order.eta }}</span>
+                                <div class="progress" style="height: 8px;">
+                                    {% if order.status == 'processing' %}
+                                        <div class="progress-bar bg-warning" style="width: {{ order.progress }}%;"></div>
+                                    {% elif order.status == 'in-transit' %}
+                                        <div class="progress-bar bg-info" style="width: {{ order.progress }}%;"></div>
+                                    {% elif order.status == 'delivered' %}
+                                        <div class="progress-bar bg-success" style="width: {{ order.progress }}%;"></div>
+                                    {% elif order.status == 'delayed' %}
+                                        <div class="progress-bar bg-danger" style="width: {{ order.progress }}%;"></div>
+                                    {% else %}
+                                        <div class="progress-bar bg-secondary" style="width: {{ order.progress }}%;"></div>
+                                    {% endif %}
                                 </div>
                             </div>
+                            <div class="d-flex justify-content-between small text-muted">
+                                <span><i class="bi bi-geo-alt me-1"></i>{{ order.location }}</span>
+                                <span>ETA: {{ order.eta }}</span>
+                            </div>
                         </div>
+                    </div>
                     {% endfor %}
                 </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox fs-1 text-muted"></i>
+                    <p class="text-muted mt-3">No orders found</p>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 
+    <!-- Footer -->
     <footer class="footer mt-5 py-4">
         <div class="container">
             <div class="text-center small text-white-50">
@@ -197,6 +277,7 @@
         </div>
     </footer>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html
