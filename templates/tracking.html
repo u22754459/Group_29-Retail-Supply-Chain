@@ -6,35 +6,12 @@
     <title>Order Tracking - Supply Chain Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <style>
-        body { background-color: #f9fafb; }
-        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .stat-card { border-left: 4px solid #2563eb; }
-        .order-card { transition: box-shadow 0.2s; }
-        .order-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .progress-bar { transition: width 0.5s ease-in-out; }
-        .footer { background-color: #1f2937; color: white; }
-        .hidden { display: none; }
-        .cart-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: #ef4444;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tracking.css') }}">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
                 <i class="bi bi-box-seam fs-4 text-primary me-2"></i>
                 <span class="fw-bold text-primary">SupplyChain Master</span>
             </a>
@@ -43,27 +20,47 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="tracking.html">Order Tracking</a></li>
-                    <li class="nav-item"><a class="nav-link" href="forecast.html">Forecast</a></li>
-                    <li class="nav-item"><a class="nav-link" href="customer.html">Customer Portal</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('shop') }}">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{{ url_for('tracking') }}">Order Tracking</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('forecast') }}">Forecast</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('customer') }}">Customer Portal</a></li>
                 </ul>
                 <div class="d-flex align-items-center gap-3">
-                    <a href="shop.html" class="btn btn-link position-relative">
+                    <a href="{{ url_for('shop') }}" class="btn btn-link position-relative">
                         <i class="bi bi-cart3 fs-5 text-secondary"></i>
                     </a>
-                    <div id="authButtons">
-                        <a href="login.html" class="btn btn-primary btn-sm">Login</a>
-                        <a href="signup.html" class="btn btn-success btn-sm">Sign Up</a>
-                    </div>
-                    
+                    {% if session.user_id %}
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i>{{ session.user_name }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">Login</a>
+                        <a href="{{ url_for('signup') }}" class="btn btn-success btn-sm">Sign Up</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </nav>
 
     <div class="container py-4">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         <h1 class="mb-4">Supply Chain Order Tracking</h1>
         
         <!-- KPI Metrics -->
@@ -74,7 +71,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <p class="small text-muted mb-1">Total Orders</p>
-                                <h3 class="mb-0">156</h3>
+                                <h3 class="mb-0">{{ total_orders }}</h3>
                             </div>
                             <i class="bi bi-box-seam text-primary fs-2"></i>
                         </div>
@@ -87,7 +84,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <p class="small text-muted mb-1">On-Time Delivery</p>
-                                <h3 class="mb-0">87.5%</h3>
+                                <h3 class="mb-0">{{ on_time_rate }}%</h3>
                             </div>
                             <i class="bi bi-clock text-success fs-2"></i>
                         </div>
@@ -142,7 +139,51 @@
                     <i class="bi bi-cart me-2"></i>
                     Recent Orders & Live Tracking
                 </h5>
-                <div class="vstack gap-3" id="ordersContainer"></div>
+                <div class="vstack gap-3">
+                    {% for order in orders %}
+                        <div class="card order-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h6 class="mb-1">{{ order.order_number }}</h6>
+                                        <p class="small text-muted mb-0">{{ order.customer_name }}</p>
+                                        <p class="small text-secondary">{{ order.product_name }}</p>
+                                    </div>
+                                    <span class="badge 
+                                        {% if order.status == 'delivered' %}bg-success
+                                        {% elif order.status == 'in-transit' %}bg-info
+                                        {% elif order.status == 'processing' %}bg-warning
+                                        {% elif order.status == 'delayed' %}bg-danger
+                                        {% else %}bg-secondary
+                                        {% endif %}">
+                                        {{ order.status.upper() }}
+                                    </span>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between small mb-1">
+                                        <span class="text-muted">Progress</span>
+                                        <span class="fw-medium">{{ order.progress }}%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar 
+                                            {% if order.status == 'delivered' %}bg-success
+                                            {% elif order.status == 'in-transit' %}bg-info
+                                            {% elif order.status == 'processing' %}bg-warning
+                                            {% elif order.status == 'delayed' %}bg-danger
+                                            {% else %}bg-secondary
+                                            {% endif %}" 
+                                            style="width: {{ order.progress }}%;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between small text-muted">
+                                    <span><i class="bi bi-geo-alt me-1"></i>{{ order.location }}</span>
+                                    <span>ETA: {{ order.eta }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
@@ -157,91 +198,5 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const orders = [
-            {id: 'ORD-001', customer: 'Katlego Mokone', product: 'Samsung Galaxy S23', status: 'in-transit', eta: '2025-10-23', location: 'Johannesburg Hub', progress: 65},
-            {id: 'ORD-002', customer: 'Phumi Mkhwanazi', product: 'iPhone 14 Pro', status: 'processing', eta: '2025-10-24', location: 'Warehouse', progress: 30},
-            {id: 'ORD-003', customer: 'Mamoshoeshoe Thebe', product: 'AirPods Pro', status: 'delivered', eta: '2025-10-20', location: 'Delivered', progress: 100},
-            {id: 'ORD-004', customer: 'Dineo Tsebe', product: 'Nike Air Max', status: 'delayed', eta: '2025-10-22', location: 'Pretoria Depot', progress: 45},
-            {id: 'ORD-005', customer: 'Alulutho Majova', product: 'JavaScript Guide', status: 'delivered', eta: '2025-10-19', location: 'Delivered', progress: 100}
-        ];
-
-        function getStatusColor(status) {
-            const colors = {
-                'delivered': 'success',
-                'in-transit': 'info',
-                'processing': 'warning',
-                'delayed': 'danger'
-            };
-            return colors[status] || 'secondary';
-        }
-
-        function displayOrders() {
-            const container = document.getElementById('ordersContainer');
-            container.innerHTML = orders.map(order => {
-                const statusColor = getStatusColor(order.status);
-                return `
-                    <div class="card order-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <h6 class="mb-1">${order.id}</h6>
-                                    <p class="small text-muted mb-0">${order.customer}</p>
-                                    <p class="small text-secondary">${order.product}</p>
-                                </div>
-                                <span class="badge bg-${statusColor}">${order.status.toUpperCase()}</span>
-                            </div>
-                            <div class="mb-2">
-                                <div class="d-flex justify-content-between small mb-1">
-                                    <span class="text-muted">Progress</span>
-                                    <span class="fw-medium">${order.progress}%</span>
-                                </div>
-                                <div class="progress" style="height: 8px;">
-                                    <div class="progress-bar bg-${statusColor}" style="width: ${order.progress}%;"></div>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between small text-muted">
-                                <span><i class="bi bi-geo-alt me-1"></i>${order.location}</span>
-                                <span>ETA: ${order.eta}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function checkAuth() {
-            const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
-            const authButtons = document.getElementById('authButtons');
-            const userGreeting = document.getElementById('userGreeting');
-            const userName = document.getElementById('userName');
-
-            if (user) {
-                authButtons.classList.add('hidden');
-                userGreeting.classList.remove('hidden');
-                userName.textContent = user.name;
-            }
-        }
-
-        function updateCartBadge() {
-            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const badge = document.getElementById('cartBadge');
-            if (cart.length > 0) {
-                badge.classList.remove('hidden');
-                badge.textContent = cart.length;
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('currentUser');
-            window.location.href = 'index.html';
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            checkAuth();
-            updateCartBadge();
-            displayOrders();
-        });
-    </script>
 </body>
 </html>
