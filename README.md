@@ -220,6 +220,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 
 ```
 ---
+```
 **Business Rules**:
 - A user must exist before placing an order
 - A user can have zero or more orders
@@ -237,6 +238,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 
 ```
 ---
+```
 **Business Rules**:
 - A product must exist in catalog before being ordered
 - A product can be in zero or more orders
@@ -255,6 +257,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 
 ```
 ---
+```
 **Business Rules**:
 - Feedback can only be submitted for existing orders
 - Each order can have at most one feedback entry
@@ -273,6 +276,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 
 ```
 ---
+```
 **Business Rules**:
 - Only registered users can submit feedback
 - A user can submit feedback for multiple orders
@@ -290,6 +294,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 
 ```
 ---
+```
 **Business Rules**:
 - Forecasts are generated per category, not per individual product
 - Multiple products can belong to the same forecast category
@@ -310,7 +315,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 
 ```
 ---
-
+```
 ## Key Performance Indicators (KPIs)
 
 | Metric | Current | Target | Status |
@@ -336,6 +341,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 7. **Submit Feedback**: Provide ratings and comments via Customer Portal after delivery
 ```
 ---
+```
 ### For Administrators
 1. **Login**: Use admin credentials to access admin features
 2. **Monitor KPIs**: View real-time metrics on dashboard and tracking pages
@@ -352,7 +358,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 4. **Custom Analytics**: Create new database views for specific metrics
 ```
 ---
-
+```
 ## Contact Information
 
 **Email**: BFB321@gmail.com  
@@ -360,7 +366,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 **Address**: University of Pretoria
 ```
 ---
-
+```
 ## License
 
 © 2025 SupplyChain Master - BFB 321 Project Team  
