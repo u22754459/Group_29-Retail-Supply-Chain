@@ -1,6 +1,6 @@
 -- Supply Chain Management System - SQLite Database Schema
 -- Database: inventory.db
--- BFB 321 Project Team: D Tsebe | M Thebe | P Mkhwanazi | K Mokone | A Majova
+-- BFB 321 Project Team: D Tsebe | M Thebe | P Mkhwanazi | K Mokone 
 -- University of Pretoria - 2025
 
 -- Enable foreign key constraints
@@ -419,9 +419,10 @@ ORDER BY units_sold DESC;
 -- Database Information and Documentation
 -- ============================================
 -- Database: SupplyChain Master Management System
--- Team Members: D Tsebe, M Thebe, P Mkhwanazi, K Mokone, A Majova
+-- Team Members: D Tsebe, M Thebe, P Mkhwanazi, K Mokone
 -- Project: BFB 321 - Supply Chain Management System
 -- Institution: University of Pretoria
 -- Academic Year: 2025
 -- Contact: BFB321@gmail.com | +27 63 049 0645
+
 -- ============================================
