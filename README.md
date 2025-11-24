@@ -208,7 +208,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
                    │ status          │
                    └─────────────────┘
 ```
-
+---
 ### Table Relationships
 
 #### 1. USERS ↔ ORDERS
@@ -219,13 +219,13 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 
 
 ```
-
+---
 **Business Rules**:
 - A user must exist before placing an order
 - A user can have zero or more orders
 - Each order must belong to exactly one user
 - Deleting a user should handle associated orders (cascade or restrict)
-
+```
 ---
 
 #### 2. PRODUCTS ↔ ORDERS
@@ -236,14 +236,14 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 
 
 ```
-
+---
 **Business Rules**:
 - A product must exist in catalog before being ordered
 - A product can be in zero or more orders
 - Each order references exactly one product
 - Product stock should decrease when order is placed
 - Product cannot be deleted if active orders exist
-
+```
 ---
 
 #### 3. ORDERS ↔ FEEDBACK
@@ -254,14 +254,14 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 
 
 ```
-
+---
 **Business Rules**:
 - Feedback can only be submitted for existing orders
 - Each order can have at most one feedback entry
 - Feedback is typically submitted after order is delivered
 - Feedback customer should match order customer
 - Orders without feedback are allowed (not all customers provide feedback)
-
+```
 ---
 
 #### 4. USERS ↔ FEEDBACK
@@ -272,13 +272,13 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 
 
 ```
-
+---
 **Business Rules**:
 - Only registered users can submit feedback
 - A user can submit feedback for multiple orders
 - Each feedback entry belongs to exactly one user
 - User information in feedback should match order information
-
+```
 ---
 
 #### 5. PRODUCTS ↔ FORECASTS
@@ -289,14 +289,14 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 
 
 ```
-
+---
 **Business Rules**:
 - Forecasts are generated per category, not per individual product
 - Multiple products can belong to the same forecast category
 - Each forecast entry represents one product category
 - Stock levels across all products in a category determine forecast status
 - Reorder recommendations apply to the entire category
-
+```
 ---
 
 ### Relationship Summary Table
