@@ -298,7 +298,6 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 - Reorder recommendations apply to the entire category
 ```
 ---
-
 ### Relationship Summary Table
 
 | Relationship | Type | Foreign Key | Cascade Behavior | Description |
@@ -310,8 +309,6 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 | PRODUCTS → FORECASTS | N:1 | category | CASCADE | Products grouped for forecasting |
 
 ```
-
-
 ---
 
 ## Key Performance Indicators (KPIs)
@@ -324,7 +321,7 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 | Return Rate | 4.2% | <3% | ⚠️ |
 | Order Accuracy | 95.8% | >95% | ✅ |
 | Customer Satisfaction | 4.6/5 | 4.8/5 | ⚠️ |
-
+```
 ---
 
 ## Usage Guide
@@ -337,7 +334,8 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 5. **Place Orders**: Complete checkout process
 6. **Track Orders**: Use Order Tracking page to monitor delivery status in real-time
 7. **Submit Feedback**: Provide ratings and comments via Customer Portal after delivery
-
+```
+---
 ### For Administrators
 1. **Login**: Use admin credentials to access admin features
 2. **Monitor KPIs**: View real-time metrics on dashboard and tracking pages
@@ -345,13 +343,14 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 4. **Review Feedback**: Access Customer Portal to read customer reviews
 5. **Analyze Performance**: Track improvements in delivery times and accuracy
 6. **Use API**: Access RESTful API for programmatic integration
-
+```
+---
 ### For Developers
 1. **API Integration**: Use provided API endpoints for custom integrations
 2. **Database Access**: Query SQLite database directly for custom reports
 3. **Extend Functionality**: Add new routes and templates as needed
 4. **Custom Analytics**: Create new database views for specific metrics
-
+```
 ---
 
 ## Contact Information
@@ -359,14 +358,14 @@ SupplyChain Master is a comprehensive supply chain management platform designed 
 **Email**: BFB321@gmail.com  
 **Phone**: +27 63 049 0645  
 **Address**: University of Pretoria
-
+```
 ---
 
 ## License
 
 © 2025 SupplyChain Master - BFB 321 Project Team  
 All rights reserved.
-
+```
 ---
 
 
